@@ -171,13 +171,6 @@ Full deployment manifest: [`contracts/deployment.json`](contracts/deployment.jso
 │   ├── api-client-react/       # React Query hooks (generated)
 │   └── db/                     # Drizzle ORM schema + migrations
 │
-├── docs/
-│   ├── ARCHITECTURE.md
-│   ├── DEPLOYMENT.md
-│   ├── INTEGRATION_GUIDE.md
-│   ├── LIQUIDITY.md
-│   └── SECURITY.md
-│
 ├── scripts/                    # Workspace utility scripts
 ├── vercel.json                 # Vercel config — builds artifacts/toxicflow
 └── README.md

@@ -1,0 +1,399 @@
+We’re continuing ToxicFlow Passport.
+
+The UI/UX redesign pass is complete. Now implement liquidity provisioning directly in the app and push all current work to GitHub in clean commits.
+
+Do not rebuild the app from scratch.
+
+Focus on:
+
+1. Add ETH/USDC liquidity provisioning UI
+2. Use the existing ToxicFlow Sepolia ETH/USDC hooked pool
+3. Support the user adding liquidity with roughly 100 Sepolia USDC available
+4. Commit and push the full project to GitHub:
+   https://github.com/Abd00lmalik/toxicflow
+
+==================================================
+CURRENT STATE
+==================================================
+
+The app is live and redesigned.
+
+Current shipped UI improvements:
+- Newsreader, Space Grotesk, Inter, JetBrains Mono fonts
+- Toxic emerald primary accent #00D166
+- Amethyst #9D4DFF for pool defense
+- Amber #F59E0B for warnings
+- noise texture background
+- emerald/amethyst aurora gradients
+- professional ToxicFlow SVG logo
+- wallet-specific SVG icons
+- wallet-only dashboard
+- improved swap page liquidity warning
+- developers page explains hook immutability and public pool limitation
+- all em dashes removed
+
+Current known pool state:
+- ToxicFlow Sepolia ETH/USDC pool is live
+- pool is initialized
+- hook is correct
+- swap execution readiness is true
+- liquidity is the remaining issue
+- user now has around 100 Sepolia USDC
+
+Real Sepolia USDC:
+0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238
+
+Current hook:
+0x024245B2CDBccf9581D1f6FbA533ca4061410080
+
+==================================================
+PRIMARY GOAL
+==================================================
+
+Add a user-facing liquidity provisioning flow directly inside the dApp.
+
+On the Swap page, add tabs:
+
+1. Swap
+2. Add Liquidity
+
+The Add Liquidity tab should allow a connected wallet to add ETH/USDC liquidity to the live ToxicFlow Sepolia pool.
+
+The user has about 100 Sepolia USDC, so design the flow around realistic testnet liquidity amounts.
+
+==================================================
+TASK 1: INSPECT CURRENT POOL AND CONTRACT SETUP
+==================================================
+
+Inspect:
+
+- deployment config
+- contracts/deployment.json
+- pool ID
+- PoolManager address
+- PositionManager or liquidity manager address if configured
+- PoolSwapTest / router addresses
+- Uniswap v4 periphery dependencies
+- current scripts:
+  - AddLiquidity.s.sol
+  - InitPool.s.sol
+  - Deploy.s.sol
+- frontend contract config
+- swap page
+- token config
+- existing USDC allowance logic
+
+Determine the correct way to add liquidity to the existing ToxicFlow ETH/USDC pool.
+
+Important:
+Do not guess Uniswap v4 liquidity APIs.
+Inspect current repo scripts and Uniswap v4 periphery usage.
+
+==================================================
+TASK 2: ADD LIQUIDITY TAB ON SWAP PAGE
+==================================================
+
+On `/swap`, add a polished tab interface:
+
+Tabs:
+- Swap
+- Add Liquidity
+
+The Add Liquidity tab should show:
+
+- current pool pair: ETH / USDC
+- current pool status
+- current connected wallet balances:
+  - ETH
+  - USDC
+- suggested amount based on available USDC
+- ETH amount input
+- USDC amount input
+- price reference:
+  - target approx 1 ETH = 2,000 USDC
+- liquidity range:
+  - simple preset range around 1,500 to 2,500 USDC per ETH if concentrated liquidity requires range
+- approval status for USDC
+- approve USDC button if required
+- add liquidity button
+- transaction status
+- success state
+- error state
+
+The UI should be clean and user-friendly.
+
+Do not expose raw backend internals by default.
+
+Advanced details can show:
+- pool ID
+- hook address
+- PoolManager
+- tick range
+- liquidity parameters
+
+==================================================
+TASK 3: HANDLE 100 USDC REALISTICALLY
+==================================================
+
+The user has around 100 Sepolia USDC.
+
+At a target price of 1 ETH = 2,000 USDC:
+
+100 USDC pairs with about:
+
+0.05 ETH
+
+So the default/suggested liquidity deposit should be around:
+
+- 0.05 ETH
+- 100 USDC
+
+Also allow smaller presets:
+
+- 0.005 ETH + 10 USDC
+- 0.01 ETH + 20 USDC
+- 0.025 ETH + 50 USDC
+- 0.05 ETH + 100 USDC
+
+Do not force exact amounts if wallet balance is lower.
+
+Add balance checks:
+- insufficient ETH
+- insufficient USDC
+- insufficient allowance
+- wrong chain
+- wallet not connected
+
+==================================================
+TASK 4: IMPLEMENT REAL LIQUIDITY TRANSACTION
+==================================================
+
+Implement the actual on-chain add liquidity transaction if technically possible.
+
+Use the correct Uniswap v4 liquidity mechanism available in the repo.
+
+Possible paths:
+1. If there is a working AddLiquidity.s.sol script:
+   - use it as reference
+   - implement equivalent frontend transaction path if possible
+2. If frontend liquidity add through v4 PositionManager is feasible:
+   - implement viem/wagmi write flow
+   - handle USDC approval
+   - send add liquidity transaction
+3. If frontend direct add liquidity is too complex:
+   - implement a secure server-side route only if safe and does not require exposing private keys
+   - or implement a “liquidity assistant” UI that prepares exact command/script for the deployer
+   - but clearly report if frontend direct add liquidity is blocked
+
+Do not fake successful liquidity addition.
+
+Do not show success unless transaction confirms.
+
+==================================================
+TASK 5: APPROVAL FLOW
+==================================================
+
+Before adding liquidity:
+
+- check USDC allowance for the correct spender
+- if allowance is insufficient, show Approve USDC
+- send approval transaction from connected wallet
+- wait for confirmation
+- then enable Add Liquidity
+
+Use real Sepolia USDC:
+0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238
+
+Do not approve fake tokens.
+
+==================================================
+TASK 6: UPDATE POOL LIQUIDITY STATUS
+==================================================
+
+After successful liquidity addition:
+
+- refresh pool state
+- refresh quote readiness
+- update diagnostics if relevant
+- remove or soften shallow-liquidity warning if pool has enough liquidity
+- show estimated supported demo swap size
+
+For example:
+- Pool funded
+- Approx price: 1 ETH = 2,000 USDC
+- Test swaps up to 0.005 ETH recommended
+- or whatever is realistic after actual liquidity
+
+Do not claim 0.1 ETH swaps are supported if only 100 USDC was added.
+
+Important:
+With only 100 USDC, a 0.1 ETH swap cannot output around 200 USDC because the pool does not contain enough USDC. The UI should be honest.
+
+If user wants 0.1 ETH to approximately 200 USDC, report that the pool needs materially more liquidity, likely at least 1 ETH + 2,000 USDC or more.
+
+==================================================
+TASK 7: UPDATE SWAP PAGE EDUCATION
+==================================================
+
+On Swap page, explain liquidity simply:
+
+“Liquidity is what lets the pool quote realistic swaps. If the pool has 100 USDC, it cannot safely support a 200 USDC output. Add ETH and USDC liquidity to improve available depth.”
+
+Do not make it too long.
+
+Use a clean tooltip or info card.
+
+==================================================
+TASK 8: UPDATE DEMO PAGE IF NEEDED
+==================================================
+
+If liquidity remains limited with 100 USDC:
+
+- set default demo swap amount to a realistic value
+- do not default to 0.1 ETH
+- use 0.001 ETH, 0.005 ETH, or based on pool depth
+- show fee differences clearly in USDC terms
+- keep the Neutral/Trusted/Toxic comparison
+
+==================================================
+TASK 9: UPDATE DEVELOPERS PAGE
+==================================================
+
+Add a small section for liquidity venues:
+
+“Providing Liquidity to a ToxicFlow Pool”
+
+Explain:
+- ToxicFlow fee logic only applies to pools initialized with the ToxicFlow hook
+- liquidity providers can add ETH/USDC liquidity to that pool
+- public pools cannot be retrofitted with the hook
+- deeper liquidity improves quote quality
+- LPs receive protection because riskier flow pays higher fees and pool defense monitors toxic concentration
+
+Keep it sleek and concise.
+
+==================================================
+TASK 10: TESTING
+==================================================
+
+Run:
+
+- pnpm tsc --noEmit or corepack pnpm tsc --noEmit
+- pnpm build or corepack pnpm build
+- forge build if available
+- forge test if available
+- curl /api/diagnostics
+- curl /api/quote?trader=<wallet>&amountIn=0.001
+- check USDC balance read
+- check USDC allowance read
+- if transaction implemented:
+  - approve USDC test
+  - add liquidity transaction test if safe
+  - quote after liquidity
+- grep/search for Mock ERC20
+- grep/search for em dash
+- grep/search for secrets before pushing
+
+==================================================
+TASK 11: GITHUB COMMIT AND PUSH
+==================================================
+
+Push everything to:
+
+https://github.com/Abd00lmalik/toxicflow
+
+There are already files there.
+
+You may edit, replace, or delete existing files as needed.
+
+But do NOT do one huge commit.
+
+Commit and push in logical chunks.
+
+Suggested commit sequence:
+
+Commit 1:
+chore: sync project structure and remove stale files
+
+Commit 2:
+feat: add liquidity provisioning UI
+
+Commit 3:
+feat: wire USDC approval and liquidity flow
+
+Commit 4:
+fix: update liquidity-aware swap and demo defaults
+
+Commit 5:
+docs: update developer liquidity integration guide
+
+Commit 6:
+chore: verify integrations and clean audits
+
+Rules:
+- run git status before commits
+- do not commit .env.local
+- do not commit private keys
+- do not commit KeeperHub key
+- do not commit 0G signer key
+- do not commit deployer private key
+- use .gitignore
+- if remote has conflicts, pull/rebase or replace carefully
+- if deleting files, make sure app still builds
+- push after each logical commit or after all commits if remote permits
+
+Before push, run secret scan:
+- search for PRIVATE_KEY
+- search for DEPLOYER_PRIVATE_KEY values
+- search for KEEPERHUB_API_KEY
+- search for ZG_SIGNER_PRIVATE_KEY
+- search for wfb_
+- search for kh_
+- search for raw private-key-like strings
+
+Do not expose secrets.
+
+==================================================
+EXPECTED FINAL REPORT
+==================================================
+
+Report:
+
+1. Current pool config inspected
+2. Liquidity add method chosen
+3. Whether frontend add liquidity works
+4. If not, exact blocker
+5. USDC balance detected
+6. ETH balance detected
+7. Suggested default liquidity amounts
+8. Approval flow status
+9. Liquidity transaction status
+10. Pool liquidity status after changes
+11. Swap warning update
+12. Demo default amount update
+13. Developers page update
+14. Files changed
+15. Commands run
+16. Build/test results
+17. Git commits made
+18. Git push status
+19. Remaining blockers
+20. Exact next user action if liquidity transaction could not be completed
+
+==================================================
+SUCCESS CRITERIA
+==================================================
+
+This pass succeeds only if:
+
+- Swap page has Swap and Add Liquidity tabs
+- Add Liquidity tab reads wallet ETH and USDC balances
+- Add Liquidity tab supports realistic deposits around the user’s 100 USDC
+- USDC approval flow is implemented if needed
+- liquidity add transaction is implemented or exact technical blocker is reported
+- UI explains that 100 USDC cannot support 0.1 ETH to 200 USDC
+- demo uses realistic default swap sizes
+- developer docs explain liquidity provisioning
+- build passes
+- project is committed and pushed to GitHub in small logical commits
+- no secrets are pushed

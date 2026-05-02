@@ -35,6 +35,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 - **Frontend**: `artifacts/toxicflow/`: React + Vite, wagmi v3, viem v2, Tailwind CSS v4, wouter routing
 - **Fonts**: Space Grotesk (display/headings), Newsreader (serif hero), Inter (body), JetBrains Mono (code)
 - **Design tokens**: Emerald `#00D166` (primary accent), Amethyst `#9D4DFF` (pool defense), Amber `#F59E0B` (warnings)
+- **Liquidity**: Swap page has Swap | Add Liquidity tabs; Add Liquidity calls `POST /api/liquidity/add` which runs `AddLiquidity.s.sol` forge script server-side using deployer key
 - **API**: `artifacts/api-server/`: Express 5 with ToxicFlow routes
 - **Contracts**: `contracts/`: Solidity 0.8.26 with Foundry
 

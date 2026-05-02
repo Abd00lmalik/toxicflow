@@ -206,6 +206,39 @@ uint24 feeBps = feePips / 100;  // 10, 30, or 80`,
         </div>
       </section>
 
+      {/* Providing Liquidity */}
+      <section style={{ marginBottom: 48 }}>
+        <h2 className="heading" style={{ marginBottom: 16 }}>Providing Liquidity to a ToxicFlow Pool</h2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {[
+            {
+              title: 'Liquidity only works with the ToxicFlow hook',
+              desc: 'ToxicFlow fee logic applies only to pools initialized with the ToxicFlow hook. Liquidity added to a standard ETH/USDC pool does not benefit from tier-based protection.',
+            },
+            {
+              title: 'Deeper liquidity improves quote quality',
+              desc: 'With limited liquidity, large swaps will fail or slip badly. A pool seeded with 0.05 ETH + 100 USDC can safely support swaps of 0.001-0.005 ETH. For 0.1 ETH swaps, you need at least 1 ETH + 2,000 USDC.',
+            },
+            {
+              title: 'LPs are protected by tier fees',
+              desc: 'Because toxic flow pays 8x more in fees than trusted flow, liquidity providers are compensated for taking on risky counterparty exposure. Pool Defense also monitors toxic concentration and can trigger automated defense responses via KeeperHub.',
+            },
+            {
+              title: 'Public pools cannot be retrofitted',
+              desc: 'Existing Uniswap ETH/USDC pools were deployed without the ToxicFlow hook. Their hook address is fixed at pool creation. To use ToxicFlow, deploy a new pool with the hook from day one.',
+            },
+          ].map(s => (
+            <div key={s.title} className="card" style={{ padding: 20 }}>
+              <div className="heading" style={{ marginBottom: 6, fontSize: 14 }}>{s.title}</div>
+              <div className="body" style={{ fontSize: 13 }}>{s.desc}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ marginTop: 16, padding: '12px 16px', background: 'var(--s2)', borderRadius: 'var(--r-sm)', fontSize: 13, color: 'var(--fg-2)' }}>
+          The ToxicFlow ETH/USDC Sepolia pool accepts liquidity via <span className="mono" style={{ fontSize: 12 }}>PoolModifyLiquidityTest</span> (testnet) or the canonical <span className="mono" style={{ fontSize: 12 }}>PositionManager</span> in production deployments. LP positions are full-range (<span className="mono" style={{ fontSize: 12 }}>tickLower: -887220, tickUpper: 887220</span>, tickSpacing: 60).
+        </div>
+      </section>
+
       {/* LP Explanation */}
       <section>
         <h2 className="heading" style={{ marginBottom: 16 }}>How Pool Defense Works</h2>

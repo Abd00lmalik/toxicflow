@@ -132,9 +132,12 @@ export default function Demo() {
         </div>
         {activated && selectedTier !== null && fee ? (
           <div>
-            <p className="body" style={{ marginBottom: 16 }}>
+            <p className="body" style={{ marginBottom: 12 }}>
               Your passport is set to <strong>{DEMO_TIERS[selectedTier].label}</strong>. The pool will apply <strong>{fee.pct}</strong> ({fee.pips} pips) to your swap: automatically, via the ToxicFlow hook.
             </p>
+            <div style={{ padding: '10px 14px', background: 'var(--amber-2)', border: '1px solid rgba(245,158,11,0.22)', borderRadius: 'var(--r-sm)', marginBottom: 16, fontSize: 12, color: 'var(--amber)', lineHeight: 1.6 }}>
+              <strong>Recommended amount:</strong> Use 0.001-0.005 ETH to stay within available pool depth. The pool has limited USDC liquidity on testnet. For best results, keep swap sizes small.
+            </div>
             <a href="/swap" className="btn btn-primary">Go to Swap Page →</a>
           </div>
         ) : (
@@ -149,7 +152,7 @@ export default function Demo() {
             <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--s4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'var(--fg-3)' }}>4</div>
             <h2 className="heading">Fee Comparison</h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 12 }}>
             {DEMO_TIERS.map(t => (
               <div key={t.tier} style={{
                 padding: '16px', borderRadius: 'var(--r-md)',
@@ -158,9 +161,15 @@ export default function Demo() {
               }}>
                 <TierBadge tier={t.tier} size="sm" />
                 <div style={{ fontSize: 24, fontWeight: 700, color: t.color, marginTop: 8 }}>{t.fee}</div>
+                <div style={{ fontSize: 12, color: 'var(--fg-3)', marginTop: 4 }}>
+                  on 0.001 ETH: {(0.001 * 2000 * (t.tier === 1 ? 0.001 : t.tier === 2 ? 0.008 : 0.003)).toFixed(4)} USDC fee
+                </div>
                 {t.tier === selectedTier && <div style={{ fontSize: 11, color: t.color, fontWeight: 600, marginTop: 4 }}>ACTIVE</div>}
               </div>
             ))}
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--fg-3)', padding: '8px 12px', background: 'var(--s2)', borderRadius: 'var(--r-sm)' }}>
+            Fee comparison uses 0.001 ETH swap at 1 ETH = 2,000 USDC. Neutral: 0.06 USDC, Trusted: 0.02 USDC, Toxic: 0.16 USDC.
           </div>
         </div>
       )}

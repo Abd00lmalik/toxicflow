@@ -261,18 +261,6 @@ GET  /api/liquidity/status              Pool and liquidity configuration
 
 ---
 
-## Documentation
-
-| Document | Description |
-|---|---|
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Technical system overview |
-| [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | Step-by-step deployment guide |
-| [`docs/INTEGRATION_GUIDE.md`](docs/INTEGRATION_GUIDE.md) | Integrating ToxicFlow into external DEXes |
-| [`docs/LIQUIDITY.md`](docs/LIQUIDITY.md) | Liquidity provisioning and pool math |
-| [`docs/SECURITY.md`](docs/SECURITY.md) | Security considerations |
-
----
-
 ## License
 
 MIT

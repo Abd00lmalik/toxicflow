@@ -1,0 +1,12 @@
+{
+  "buildCommand": "pnpm --filter @workspace/toxicflow run build",
+  "outputDirectory": "artifacts/toxicflow/dist/public",
+  "installCommand": "pnpm install",
+  "framework": null,
+  "env": {
+    "BASE_PATH": "/"
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

@@ -1,5 +1,6 @@
 packages:
-  - artifacts/*
+  - artifacts/toxicflow
+  - artifacts/api-server
   - lib/*
   - lib/integrations/*
   - scripts

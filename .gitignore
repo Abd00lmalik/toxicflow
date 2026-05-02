@@ -54,3 +54,8 @@ attached_assets/
 # Foundry build outputs
 contracts/out/
 contracts/cache/
+
+# Replit workspace internals (not needed for production)
+replit.md
+.replitignore
+artifacts/mockup-sandbox/

@@ -55,7 +55,7 @@ router.post("/liquidity/add", async (req, res): Promise<void> => {
   const ethWei  = BigInt(Math.round(ethFloat  * 1e18)).toString();
   const usdcRaw = BigInt(Math.round(usdcFloat * 1e6)).toString();
 
-  const scriptPath = "contracts/script/AddLiquidity.s.sol";
+  const scriptPath = "contracts/script/liquidity/AddLiquidity.s.sol";
   const forgeCmd = [
     `${FOUNDRY_BIN}/forge`,
     "script", scriptPath,

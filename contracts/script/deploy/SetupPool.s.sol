@@ -10,6 +10,7 @@ import {LPFeeLibrary} from "v4-core/libraries/LPFeeLibrary.sol";
 import {TickMath} from "v4-core/libraries/TickMath.sol";
 import {PoolId, PoolIdLibrary} from "v4-core/types/PoolId.sol";
 
+/// @notice Initialize the ToxicFlow ETH/USDC hooked pool on Sepolia
 contract SetupPool is Script {
     using PoolIdLibrary for PoolKey;
 

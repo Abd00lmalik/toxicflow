@@ -2,8 +2,9 @@
 pragma solidity ^0.8.26;
 
 import {Script, console} from "forge-std/Script.sol";
-import {PassportRegistry} from "../src/PassportRegistry.sol";
+import {PassportRegistry} from "../../src/passport/PassportRegistry.sol";
 
+/// @notice Seed initial wallet tiers in PassportRegistry
 contract SeedTiers is Script {
     function run() external {
         uint256 deployerKey = vm.envUint("DEPLOYER_PRIVATE_KEY");

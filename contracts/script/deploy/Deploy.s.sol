@@ -2,11 +2,11 @@
 pragma solidity ^0.8.26;
 
 import {Script, console} from "forge-std/Script.sol";
-import {PassportRegistry} from "../src/PassportRegistry.sol";
-import {ToxicFlowHook} from "../src/ToxicFlowHook.sol";
+import {PassportRegistry} from "../../src/passport/PassportRegistry.sol";
+import {ToxicFlowHook} from "../../src/hooks/ToxicFlowHook.sol";
 import {IPoolManager} from "v4-core/interfaces/IPoolManager.sol";
 import {Hooks} from "v4-core/libraries/Hooks.sol";
-import {HookMiner} from "./HookMiner.sol";
+import {HookMiner} from "../utils/HookMiner.sol";
 
 /// @notice Deploy PassportRegistry + ToxicFlowHook on Sepolia
 contract Deploy is Script {

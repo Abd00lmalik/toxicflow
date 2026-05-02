@@ -2,11 +2,11 @@
 pragma solidity ^0.8.26;
 
 import {Script, console} from "forge-std/Script.sol";
-import {ToxicFlowHook} from "../src/ToxicFlowHook.sol";
+import {ToxicFlowHook} from "../../src/hooks/ToxicFlowHook.sol";
 import {IPoolManager} from "v4-core/interfaces/IPoolManager.sol";
 import {Hooks} from "v4-core/libraries/Hooks.sol";
-import {HookMiner} from "./HookMiner.sol";
-import {IPassportRegistry} from "../src/interfaces/IPassportRegistry.sol";
+import {HookMiner} from "../utils/HookMiner.sol";
+import {IPassportRegistry} from "../../src/passport/interfaces/IPassportRegistry.sol";
 
 /// @notice Re-deploy ToxicFlowHook using the exact-flag HookMiner (registry already deployed)
 contract DeployHook is Script {

@@ -10,7 +10,7 @@ import {BeforeSwapDelta, BeforeSwapDeltaLibrary} from "v4-core/types/BeforeSwapD
 import {PoolId, PoolIdLibrary} from "v4-core/types/PoolId.sol";
 import {LPFeeLibrary} from "v4-core/libraries/LPFeeLibrary.sol";
 import {SwapParams, ModifyLiquidityParams} from "v4-core/types/PoolOperation.sol";
-import {IPassportRegistry} from "./interfaces/IPassportRegistry.sol";
+import {IPassportRegistry} from "../passport/interfaces/IPassportRegistry.sol";
 import {ITierResolver} from "./interfaces/ITierResolver.sol";
 
 /// @title ToxicFlowHook

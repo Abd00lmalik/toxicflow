@@ -2,8 +2,8 @@
 pragma solidity ^0.8.26;
 
 import {Test} from "forge-std/Test.sol";
-import {PassportRegistry} from "../src/PassportRegistry.sol";
-import {ToxicFlowHook} from "../src/ToxicFlowHook.sol";
+import {PassportRegistry} from "../src/passport/PassportRegistry.sol";
+import {ToxicFlowHook} from "../src/hooks/ToxicFlowHook.sol";
 import {IPoolManager} from "v4-core/interfaces/IPoolManager.sol";
 
 /// @notice Tests for PassportRegistry (unit) and ToxicFlowHook.previewFee (integration)

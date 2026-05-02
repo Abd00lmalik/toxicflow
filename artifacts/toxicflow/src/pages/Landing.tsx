@@ -40,7 +40,7 @@ export default function Landing() {
           </span>
         </h1>
         <p className="body-lg anim-fade-up d1" style={{ maxWidth: 520, marginBottom: 40 }}>
-          ToxicFlow gives every wallet a behavior-based passport. Your tier determines your swap fee — automatically applied by the pool hook.
+          ToxicFlow gives every wallet a behavior-based passport. Your tier determines your swap fee: automatically applied by the pool hook.
         </p>
         <div className="anim-fade-up d2" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 64 }}>
           <Link href="/swap" className="btn btn-primary btn-lg">Start Swapping</Link>
@@ -75,12 +75,12 @@ export default function Landing() {
           <div>
             <div className="label" style={{ marginBottom: 16 }}>The Problem</div>
             <h2 className="display-md" style={{ marginBottom: 20 }}>Every wallet pays the same fee. That's not fair.</h2>
-            <p className="body-lg">Most AMM liquidity pools charge a flat fee to all traders — regardless of whether they're long-term liquidity providers, arbitrage bots, or sandwich attackers. This exposes LPs to toxic flow with no protection.</p>
+            <p className="body-lg">Most AMM liquidity pools charge a flat fee to all traders: regardless of whether they're long-term liquidity providers, arbitrage bots, or sandwich attackers. This exposes LPs to toxic flow with no protection.</p>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {[
               { label: 'Safe Trader', tier: 1, fee: '0.10%', desc: 'Long-term, honest flow' },
-              { label: 'Average Wallet', tier: 0, fee: '0.30%', desc: 'Default — no passport' },
+              { label: 'Average Wallet', tier: 0, fee: '0.30%', desc: 'Default: no passport' },
               { label: 'Toxic Wallet', tier: 2, fee: '0.80%', desc: 'Arbitrage / sandwich attack' },
             ].map(row => (
               <div key={row.label} className="card-elevated" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -130,7 +130,7 @@ export default function Landing() {
         <div className="reveal d1" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 24 }}>
           {[
             { tier: 1, pct: '0.10%', desc: 'Earned by wallets demonstrating safe, honest trading behavior over time.' },
-            { tier: 0, pct: '0.30%', desc: 'The default tier — applied to all wallets without a passport or established history.' },
+            { tier: 0, pct: '0.30%', desc: 'The default tier: applied to all wallets without a passport or established history.' },
             { tier: 2, pct: '0.80%', desc: 'Applied to wallets identified as arbitrage bots or sandwich attackers.' },
           ].map(({ tier, pct, desc }) => {
             const colors = ['var(--neutral)', 'var(--trusted)', 'var(--toxic)']

@@ -15,7 +15,7 @@ contract DeployHook is Script {
 
     function run() external {
         uint256 deployerKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
-        // Use existing registry — no need to redeploy
+        // Use existing registry: no need to redeploy
         address registryAddr = vm.envOr(
             "VITE_PASSPORT_REGISTRY",
             address(0x101fd25Ff9B9EBC21359B15F0cdE8aD7C4f01D0e)
@@ -25,7 +25,7 @@ contract DeployHook is Script {
         console.log("Registry:", registryAddr);
         console.log("PoolManager:", POOL_MANAGER);
 
-        // BEFORE_SWAP_FLAG only — lower 14 bits must be exactly 0x0080
+        // BEFORE_SWAP_FLAG only: lower 14 bits must be exactly 0x0080
         uint160 exactFlags = Hooks.BEFORE_SWAP_FLAG;
         console.log("Target flag bits (lower 14):", exactFlags);
 

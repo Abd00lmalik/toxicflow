@@ -8,7 +8,7 @@ export interface SwapToken {
   unavailableReason?: string
 }
 
-// Real Sepolia USDC — always the output token for the main swap path
+// Real Sepolia USDC: always the output token for the main swap path
 const SEPOLIA_USDC = '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238'
 
 export function getTokens(): { input: SwapToken; output: SwapToken } {

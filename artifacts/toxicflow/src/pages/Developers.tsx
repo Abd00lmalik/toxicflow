@@ -20,14 +20,14 @@ export default function Developers() {
         <div className="label" style={{ marginBottom: 8 }}>Integration Guide</div>
         <h1 className="display-md" style={{ marginBottom: 16 }}>Integrate ToxicFlow Passport</h1>
         <p className="body-lg" style={{ maxWidth: 640 }}>
-          For AMMs, DEXes, and swap interfaces. Read a wallet's tier on-chain in one call — the pool hook applies the correct fee automatically.
+          For AMMs, DEXes, and swap interfaces. Read a wallet's tier on-chain in one call: the pool hook applies the correct fee automatically.
         </p>
       </div>
 
       {/* Quick Integration */}
       <section style={{ marginBottom: 48 }}>
         <h2 className="heading" style={{ marginBottom: 20 }}>Quick Integration</h2>
-        <CodeBlock language="solidity" code={`// Resolver interface — call on PassportRegistry or ToxicFlowHook
+        <CodeBlock language="solidity" code={`// Resolver interface: call on PassportRegistry or ToxicFlowHook
 
 // Returns 0 = Neutral, 1 = Trusted, 2 = Toxic
 function getTraderTier(address trader) external view returns (uint8);
@@ -54,7 +54,7 @@ function previewFee(address trader)
             GET {resolverUrl}
           </code>
           <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {['trader (required) — 0x wallet address', 'method — "all" returns all resolver fields'].map(p => (
+            {['trader (required): 0x wallet address', 'method: "all" returns all resolver fields'].map(p => (
               <div key={p} className="caption">• {p}</div>
             ))}
           </div>
@@ -91,7 +91,7 @@ poolManager.initialize(key, sqrtPriceX96);`,
             {
               step: '2',
               title: 'The hook reads tier on every swap',
-              code: `// ToxicFlowHook.beforeSwap() — called automatically
+              code: `// ToxicFlowHook.beforeSwap(): called automatically
 address trader = tx.origin;
 uint8 tier = registry.getTier(trader);
 uint24 fee = tier == 1 ? 1000 : tier == 2 ? 8000 : 3000;
@@ -179,6 +179,33 @@ uint24 feeBps = feePips / 100;  // 10, 30, or 80`,
         </div>
       </section>
 
+      {/* Hook immutability */}
+      <section style={{ marginBottom: 48 }}>
+        <h2 className="heading" style={{ marginBottom: 16 }}>Hook Immutability and Public Pools</h2>
+        <div className="card" style={{ padding: 24, borderColor: 'rgba(245,158,11,0.22)', background: 'rgba(245,158,11,0.03)' }}>
+          <div style={{ fontSize: 13, color: 'var(--amber)', marginBottom: 10, fontWeight: 700 }}>Important: Hooks are fixed at pool creation</div>
+          <div className="body" style={{ marginBottom: 12, fontSize: 14 }}>
+            In Uniswap v4, the hook address is embedded in the <span className="mono" style={{ fontSize: 12 }}>PoolKey</span>. This means:
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {[
+              'A pool with no hook cannot have one added later.',
+              'A pool with a different hook cannot be switched to ToxicFlow.',
+              'Public Uniswap pools (ETH/USDC, etc.) were deployed without the ToxicFlow hook: they cannot use tier-based fees.',
+              'To use ToxicFlow, you must deploy a new pool with the ToxicFlow hook from day one.',
+            ].map(point => (
+              <div key={point} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                <span style={{ color: 'var(--amber)', fontWeight: 700, flexShrink: 0, marginTop: 1 }}>·</span>
+                <span className="body" style={{ fontSize: 14 }}>{point}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 16, padding: '12px 16px', background: 'var(--s2)', borderRadius: 'var(--r-sm)', fontSize: 13, color: 'var(--fg-2)' }}>
+            The ToxicFlow ETH/USDC pool deployed on Sepolia (<span className="mono" style={{ fontSize: 12 }}>tickSpacing: 60</span>, <span className="mono" style={{ fontSize: 12 }}>fee: DYNAMIC_FEE_FLAG</span>) is a dedicated pool with the hook set at initialization. It is separate from all other ETH/USDC pools.
+          </div>
+        </div>
+      </section>
+
       {/* LP Explanation */}
       <section>
         <h2 className="heading" style={{ marginBottom: 16 }}>How Pool Defense Works</h2>
@@ -186,7 +213,7 @@ uint24 feeBps = feePips / 100;  // 10, 30, or 80`,
           {[
             { title: 'Dynamic fee protection', desc: 'The ToxicFlowHook charges higher fees to wallets identified as toxic flow. This makes sandwich attacks and arbitrage more expensive, directly protecting LP returns.' },
             { title: 'Threshold monitoring', desc: 'Pool Defense tracks the composition of recent swaps. When the toxic share exceeds the configured threshold, KeeperHub triggers an automated protective response.' },
-            { title: 'Why integrate ToxicFlow', desc: 'DEXes and AMMs integrating ToxicFlow get an out-of-the-box tier resolver, an on-chain fee classification system, and a KeeperHub automation layer — without any custom smart contract development.' },
+            { title: 'Why integrate ToxicFlow', desc: 'DEXes and AMMs integrating ToxicFlow get an out-of-the-box tier resolver, an on-chain fee classification system, and a KeeperHub automation layer: without any custom smart contract development.' },
           ].map(s => (
             <div key={s.title} className="card" style={{ padding: 24 }}>
               <div className="heading" style={{ marginBottom: 8 }}>{s.title}</div>

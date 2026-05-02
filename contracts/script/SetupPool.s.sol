@@ -15,7 +15,7 @@ contract SetupPool is Script {
 
     address constant POOL_MANAGER = 0xE03A1074c86CFeDd5C142C4F04F1a1536e203543;
 
-    // Real Sepolia USDC — 6 decimals
+    // Real Sepolia USDC: 6 decimals
     address constant SEPOLIA_USDC = 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238;
 
     function run() external {

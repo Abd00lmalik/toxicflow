@@ -59,7 +59,7 @@ export default function Records() {
 
       {!RUNTIME_MODE.eventIndexingLive && (
         <div style={{ padding: '16px 20px', background: 'var(--neutral-2)', borderRadius: 'var(--r-md)', marginBottom: 24, fontSize: 13, color: 'var(--neutral)' }}>
-          Event indexing not configured — deploy the ToxicFlow hook to see live fee records.
+          Event indexing not configured: deploy the ToxicFlow hook to see live fee records.
         </div>
       )}
 

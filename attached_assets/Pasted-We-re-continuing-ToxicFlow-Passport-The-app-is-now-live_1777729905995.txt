@@ -1,0 +1,518 @@
+We’re continuing ToxicFlow Passport.
+
+The app is now live on Sepolia, but this pass must fix product polish, public pool/liquidity strategy, UI/UX, wallet icon handling, dashboard focus, GitHub push workflow, and final integration verification.
+
+Do not rebuild from scratch unless required.
+
+Make targeted fixes, test after each meaningful change, and commit/push in small chunks.
+
+==================================================
+CURRENT LIVE STATE
+==================================================
+
+ToxicFlow is live on Sepolia.
+
+Current known live addresses:
+
+PassportRegistry:
+0x101f...D0e
+
+ToxicFlowHook v2:
+0x024245B2CDBccf9581D1f6FbA533ca4061410080
+
+ETH/USDC pool:
+0x7cd5...48d
+
+Important context:
+The original hook address had incorrect lower 14-bit flags. HookMiner was fixed to require an exact 14-bit match:
+addr & 0x3FFF == exactFlags
+
+The new hook v2 has correct flags and the dashboard shows:
+- Passport Registry live
+- Hook Preview live
+- Pool Ready live
+- Event Indexing live
+- KeeperHub live
+- realSwapExecutionReady now true
+
+Remaining liquidity issue:
+The ETH/USDC pool is initialized but has no liquidity. Real swaps will fail until liquidity is added.
+
+==================================================
+PRIMARY TASKS
+==================================================
+
+1. Remove all em dashes from the entire project.
+2. Investigate whether we can use a public USDC pool instead of our own empty pool.
+3. If public pool can work with ToxicFlow, use it.
+4. If public pool cannot work because Uniswap v4 hooks are fixed at pool creation, explain clearly in UI/dev docs/report.
+5. Make UI/UX match the attached reference video quality and motion direction.
+6. Push/commit to GitHub repo in small chunks:
+   https://github.com/Abd00lmalik/toxicflow
+7. Redesign dashboard so it only shows connected wallet information.
+8. Use stylized, premium, readable fonts.
+9. Improve ToxicFlow logo so it looks professional.
+10. Fix wallet modal so each wallet shows its correct icon, not one generic wallet-extension logo.
+11. Confirm 0G, KeeperHub, and Uniswap are truly core infrastructures and actually integrated.
+
+==================================================
+TASK 1: REMOVE ALL EM DASHES
+==================================================
+
+Search the whole repo for:
+
+—
+
+Remove every em dash.
+
+Replace with:
+- comma
+- colon
+- parentheses
+- hyphen
+- normal sentence split
+
+Do not leave any em dash in:
+- UI copy
+- docs
+- comments
+- README
+- code strings
+- error messages
+- markdown
+- developer docs
+
+Run a final grep/search and report zero matches.
+
+==================================================
+TASK 2: PUBLIC USDC POOL INVESTIGATION
+==================================================
+
+I want to know whether ToxicFlow can use a public Sepolia USDC pool instead of our own empty ETH/USDC pool.
+
+Investigate with Uniswap v4 rules.
+
+Answer and implement if possible:
+
+1. Can a Uniswap v4 hook be attached to an existing public pool after that pool already exists?
+2. Is the hook address part of the PoolKey?
+3. If hook address is part of PoolKey, does changing hook address create a different pool ID?
+4. Can a normal public ETH/USDC pool enforce ToxicFlow passport-based dynamic fees?
+5. Can public pools only be used as reference liquidity/quote sources, while ToxicFlow needs its own hooked pool for fee enforcement?
+6. Is there any safe way to route through public liquidity while still enforcing ToxicFlow fee logic?
+
+If public pool can work:
+- configure ToxicFlow to use it
+- verify quote
+- verify swap
+- verify fee event
+- verify record storage
+
+If public pool cannot work:
+- keep ToxicFlow hooked pool
+- clearly report why
+- update Developers page with a simple explanation:
+  “Existing pools cannot be retrofitted with ToxicFlow fees because the hook is fixed into the pool at creation.”
+- keep UI focused on current ToxicFlow ETH/USDC pool
+- add a clear liquidity requirement message only where needed
+
+Do not pretend public liquidity is ToxicFlow-enforced if it is not.
+
+==================================================
+TASK 3: LIQUIDITY READINESS
+==================================================
+
+Current ETH/USDC ToxicFlow pool is initialized but has no liquidity.
+
+Do the following:
+
+1. Check deployer Sepolia ETH balance.
+2. Check deployer Sepolia USDC balance:
+   USDC: 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238
+3. If deployer has USDC:
+   - run AddLiquidity.s.sol
+   - add liquidity to the live ToxicFlow ETH/USDC pool
+   - verify swaps work
+4. If deployer has no USDC:
+   - report exact deployer address to fund
+   - report faucet:
+     https://faucet.circle.com
+   - recommend minimum USDC amount
+   - keep swap UI honest:
+     “Pool is live but waiting for liquidity”
+5. Do not use fake USDC or tfUSDC in the primary flow.
+6. Do not show “Mock ERC20” anywhere.
+
+==================================================
+TASK 4: UI/UX REBUILD TO MATCH REFERENCE VIDEO
+==================================================
+
+Use the attached reference video as the benchmark:
+
+antimetal-2(1).mp4
+
+Study it carefully.
+
+Do not copy brand, logo, exact layout, or text.
+
+Adapt the quality level:
+- premium product website
+- cinematic motion
+- strong typography
+- rich gradients
+- smooth transitions
+- layered visuals
+- polished spacing
+- high-end SaaS/product feel
+- strong landing page storytelling
+- professional but futuristic
+
+The current UI must not look like a plain dark dApp.
+
+Every page should feel designed, not assembled.
+
+Apply this to:
+- landing page
+- dashboard
+- passport page
+- swap page
+- records page
+- pool defense page
+- developers page
+- demo page
+- wallet modal
+
+Use visual depth:
+- animated gradients
+- subtle glow
+- card layers
+- premium background sections
+- smooth scroll motion
+- polished buttons
+- soft shadows
+- better page composition
+- responsive layout
+
+Do not overuse chaotic neon.
+Make it beautiful, mature, and professional.
+
+==================================================
+TASK 5: DASHBOARD MUST BE WALLET-ONLY
+==================================================
+
+Remove system-wide status and infrastructure information from the dashboard.
+
+Dashboard should only show information related to the connected user wallet.
+
+If disconnected:
+- show premium connect-wallet onboarding
+- explain what the dashboard will show after connection
+
+If connected:
+show only:
+- connected wallet
+- passport status
+- current tier
+- current fee class
+- user’s recent swaps
+- user’s recent fee records
+- user’s stored records
+- user’s score/tier update status
+- next recommended user action
+- user’s last transaction
+- user’s last stored record
+
+Do not show:
+- hook address
+- pool ID
+- registry address
+- KeeperHub status
+- 0G status
+- system health
+- global event count
+- backend diagnostics
+
+Those belong in:
+- Diagnostics
+- Developers
+- Advanced details
+
+==================================================
+TASK 6: STYLIZED FONTS
+==================================================
+
+Use premium, readable, stylized fonts.
+
+Recommended:
+- Display: Space Grotesk, Sora, Clash Display if available, or similar
+- Body: Inter, Manrope, Plus Jakarta Sans, Geist
+- Mono: Geist Mono or JetBrains Mono
+
+Rules:
+- headings should feel futuristic and premium
+- body text must stay readable
+- code/hashes should use mono
+- do not use hard-to-read novelty fonts
+
+Update global font system and ensure all pages use it consistently.
+
+==================================================
+TASK 7: PROFESSIONAL TOXICFLOW LOGO
+==================================================
+
+Improve the ToxicFlow logo.
+
+Current wordmark is too plain.
+
+Create a professional logo system:
+- icon mark
+- wordmark
+- compact logo for nav
+- possible animated/glowing mark for landing
+- should fit trust, flow, passport, liquidity protection
+- no cheap skull/toxic cliché
+- no childish biohazard icon unless abstracted tastefully
+
+Possible direction:
+- stylized flow ring
+- shield/passport glyph
+- fluid path mark
+- “T” + flow line
+- liquidity wave inside a badge
+
+Use SVG or clean CSS/React component.
+
+Update:
+- nav logo
+- landing hero logo/brand mark
+- favicon if easy
+- developer docs brand area if present
+
+==================================================
+TASK 8: WALLET ICON FIX
+==================================================
+
+Current issue:
+When clicking Connect Wallet, the modal shows the same generic wallet extension logo instead of each wallet having its own corresponding logo.
+
+Fix wallet modal.
+
+Each wallet must show correct icon and name:
+- MetaMask: fox-style icon or recognizable custom MetaMask-like icon
+- Rabby: Rabby-specific icon if available, or clearly distinct custom icon
+- OKX Wallet: OKX-style icon
+- Zerion: Zerion-style icon
+- Browser Wallet: generic browser wallet icon only for unknown injected provider
+
+Do not show:
+- “Injected”
+- same icon for all wallets
+- blank icon
+- broken images
+
+Detection:
+- map connector IDs/names/provider flags to display names and icons
+- dedupe wallet options
+- disabled unavailable wallets if needed
+- show connection error clearly
+- centered modal
+- polished motion
+
+==================================================
+TASK 9: CONFIRM CORE INFRASTRUCTURE INTEGRATIONS
+==================================================
+
+Confirm and report whether all three are truly integrated:
+
+1. Uniswap
+Must verify:
+- Hook v2 deployed with correct flags
+- ETH/USDC pool initialized
+- Pool uses ToxicFlowHook v2
+- quote path works
+- swap path ready once liquidity exists
+- SwapFeeApplied event is emitted after swap
+
+2. 0G
+Must verify:
+- evidence/record storage route works
+- storage references are real
+- post-swap auto-storage works if swap exists
+- no fake storage success
+
+3. KeeperHub
+Must verify:
+- API URL configured
+- API key configured
+- workflow ID configured
+- trigger route works
+- workflow returns running/success
+- Pool Defense uses the correct payload
+- no fake automation success
+
+Produce a clean status table in final report:
+- Integrated
+- Working
+- Blocked
+- Required action
+
+==================================================
+TASK 10: DEVELOPERS PAGE
+==================================================
+
+Developers page should remain a serious integration page for:
+
+- AMMs
+- DEXes
+- dApps
+- swap interfaces
+- liquidity pools
+
+It must explain:
+- what ToxicFlow is
+- how to query wallet tier
+- how to preview fee
+- how to integrate into their own app
+- what the resolver/API/SDK provides
+- why existing pools cannot simply be retrofitted if hook immutability applies
+- how Pool Defense works
+- how records/storage work
+
+Include:
+- API call example
+- SDK function example
+- Solidity/interface example
+- testnet addresses
+- copy buttons
+- clean code blocks
+- strong UI polish
+
+==================================================
+TASK 11: GITHUB PUSH AND COMMIT WORKFLOW
+==================================================
+
+Push changes to:
+
+https://github.com/Abd00lmalik/toxicflow
+
+Important:
+There are files already in the repo.
+
+You may replace files if needed, but do not do one huge commit.
+
+Commit and push in small logical chunks.
+
+Rules:
+- check git status before every commit
+- commit related files only
+- run build before final push
+- do not commit private keys or .env.local
+- ensure .gitignore excludes secrets
+- if remote has conflicting files, pull/rebase or replace carefully
+- if repo must be overwritten, do it intentionally and report what happened
+
+Run:
+- git status
+- git remote -v
+- git add selective files
+- git commit -m "..."
+- git push
+
+If authentication fails:
+- report exact command needed
+- do not expose tokens
+
+==================================================
+TASK 12: REMOVE PRIVATE/SECRET RISK
+==================================================
+
+Before pushing:
+
+Verify:
+- .env.local is not committed
+- private keys are not committed
+- KeeperHub API key is not committed
+- 0G signer key is not committed
+- deployer private key is not committed
+- no logs contain secrets
+
+Run a search for:
+- DEPLOYER_PRIVATE_KEY value patterns
+- KEEPERHUB_API_KEY value
+- ZG_SIGNER_PRIVATE_KEY value
+- PRIVATE_KEY
+- wfb_
+- kh_
+- 0x private-key-length strings if possible
+
+Do not push secrets.
+
+==================================================
+TESTING REQUIREMENTS
+==================================================
+
+Run before final report:
+
+- pnpm tsc --noEmit or corepack pnpm tsc --noEmit
+- pnpm build or corepack pnpm build
+- forge build if available
+- forge test if available
+- curl /api/diagnostics
+- curl /api/resolver?trader=<wallet>&method=all
+- curl /api/quote?trader=<wallet>&amountIn=0.001
+- curl /api/events?limit=5
+- curl /api/evidence/anchored?limit=5
+- curl /api/keeperhub/trigger with valid payload
+- wallet diagnostics route if present
+- grep/search for em dash
+- grep/search for Mock ERC20
+- grep/search for secrets before pushing
+
+==================================================
+EXPECTED FINAL REPORT
+==================================================
+
+Report:
+
+1. Em dash removal result
+2. Public USDC pool investigation result
+3. Whether public pool can be used
+4. If public pool cannot be used, exact reason
+5. Liquidity status
+6. Deployer USDC balance
+7. Whether liquidity was added
+8. UI/UX changes based on reference video
+9. Dashboard wallet-only changes
+10. Font system changes
+11. Logo changes
+12. Wallet icon changes
+13. Uniswap integration confirmation
+14. 0G integration confirmation
+15. KeeperHub integration confirmation
+16. Developers page changes
+17. Git commits made
+18. GitHub push status
+19. Files changed
+20. Commands run
+21. Build/test results
+22. Remaining blockers
+23. Exact next action for user if liquidity/funding is still blocked
+
+==================================================
+SUCCESS CRITERIA
+==================================================
+
+This pass is successful only if:
+
+- all em dashes are removed
+- public pool feasibility is investigated and clearly answered
+- ETH/USDC ToxicFlow pool strategy is correct
+- UI looks much closer to the reference video quality
+- dashboard only shows wallet-related information
+- stylized fonts are applied
+- ToxicFlow logo looks professional
+- wallet modal shows correct wallet-specific icons
+- 0G, KeeperHub, and Uniswap integrations are confirmed honestly
+- code is committed and pushed to GitHub in small chunks
+- secrets are not pushed
+- build passes

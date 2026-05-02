@@ -6,9 +6,9 @@ import { usePassport } from '@/hooks/usePassport'
 import { tierFee } from '@/lib/swap/tokens'
 
 const DEMO_TIERS = [
-  { tier: 0, label: 'Neutral', color: 'var(--neutral)', desc: 'Default fee class — 30 bps', fee: '0.30%' },
-  { tier: 1, label: 'Trusted', color: 'var(--trusted)', desc: 'Lower fee — earned by safe trading — 10 bps', fee: '0.10%' },
-  { tier: 2, label: 'Toxic', color: 'var(--toxic)', desc: 'Higher fee — applied to risky flow — 80 bps', fee: '0.80%' },
+  { tier: 0, label: 'Neutral', color: 'var(--neutral)', desc: 'Default fee class: 30 bps', fee: '0.30%' },
+  { tier: 1, label: 'Trusted', color: 'var(--trusted)', desc: 'Lower fee: earned by safe trading: 10 bps', fee: '0.10%' },
+  { tier: 2, label: 'Toxic', color: 'var(--toxic)', desc: 'Higher fee: applied to risky flow: 80 bps', fee: '0.80%' },
 ]
 
 export default function Demo() {
@@ -39,7 +39,7 @@ export default function Demo() {
         setActivateError(d.error ?? 'Failed to set tier')
       }
     } catch {
-      setActivateError('Network error — server may not be configured')
+      setActivateError('Network error: server may not be configured')
     } finally {
       setActivating(false)
     }
@@ -56,7 +56,7 @@ export default function Demo() {
         <div className="card" style={{ padding: 20, borderColor: 'var(--stale)', background: 'rgba(251,191,36,0.04)' }}>
           <div style={{ fontSize: 13, color: 'var(--stale)', marginBottom: 8, fontWeight: 700 }}>⚠ Demo Notice</div>
           <p className="body" style={{ fontSize: 13 }}>
-            This guided demo shows ToxicFlow in real time. You use your actual wallet. You sign real transactions. The only demo element is choosing which passport tier to demonstrate. Selecting a tier uses admin access to set your wallet's tier in the testnet registry — your connected wallet signs a real Sepolia transaction. The ToxicFlow swap fee shown is the actual fee applied by the pool — this is separate from the Ethereum network gas fee shown in your wallet.
+            This guided demo shows ToxicFlow in real time. You use your actual wallet. You sign real transactions. The only demo element is choosing which passport tier to demonstrate. Selecting a tier uses admin access to set your wallet's tier in the testnet registry: your connected wallet signs a real Sepolia transaction. The ToxicFlow swap fee shown is the actual fee applied by the pool: this is separate from the Ethereum network gas fee shown in your wallet.
           </p>
         </div>
       </div>
@@ -133,7 +133,7 @@ export default function Demo() {
         {activated && selectedTier !== null && fee ? (
           <div>
             <p className="body" style={{ marginBottom: 16 }}>
-              Your passport is set to <strong>{DEMO_TIERS[selectedTier].label}</strong>. The pool will apply <strong>{fee.pct}</strong> ({fee.pips} pips) to your swap — automatically, via the ToxicFlow hook.
+              Your passport is set to <strong>{DEMO_TIERS[selectedTier].label}</strong>. The pool will apply <strong>{fee.pct}</strong> ({fee.pips} pips) to your swap: automatically, via the ToxicFlow hook.
             </p>
             <a href="/swap" className="btn btn-primary">Go to Swap Page →</a>
           </div>

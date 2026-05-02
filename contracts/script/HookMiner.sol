@@ -26,7 +26,7 @@ library HookMiner {
     uint160 internal constant HOOK_MASK = 0x3FFF;
 
     /// @notice Find a salt such that deployer.CREATE2(salt, initCode) produces an address where
-    ///         (addr & HOOK_MASK) == exactFlags — i.e. EXACTLY the required bits are set.
+    ///         (addr & HOOK_MASK) == exactFlags: i.e. EXACTLY the required bits are set.
     /// @param deployer      The address that will call CREATE2 (e.g. the Foundry CREATE2 factory)
     /// @param exactFlags    The exact lower-14-bit pattern required (use Hooks.BEFORE_SWAP_FLAG etc.)
     /// @param creationCode  type(Contract).creationCode
@@ -41,7 +41,7 @@ library HookMiner {
         for (uint256 nonce = 0; nonce < 500_000; nonce++) {
             salt = bytes32(nonce);
             hookAddress = _computeAddress(deployer, salt, initCodeHash);
-            // Require that the lower 14 bits match EXACTLY — no stray flag bits
+            // Require that the lower 14 bits match EXACTLY: no stray flag bits
             if (uint160(hookAddress) & HOOK_MASK == exactFlags & HOOK_MASK) {
                 return (hookAddress, salt);
             }

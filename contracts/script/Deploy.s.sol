@@ -13,7 +13,7 @@ contract Deploy is Script {
     // Sepolia Uniswap v4 PoolManager
     address constant POOL_MANAGER = 0xE03A1074c86CFeDd5C142C4F04F1a1536e203543;
 
-    // Foundry's standard CREATE2 factory — same address on every chain
+    // Foundry's standard CREATE2 factory: same address on every chain
     // https://github.com/Arachnid/deterministic-deployment-proxy
     // (named differently to avoid collision with forge-std's BASE.CREATE2_FACTORY)
     address constant DEPLOY_FACTORY = 0x4e59b44847b379578588920cA78FbF26c0B4956C;
@@ -28,12 +28,12 @@ contract Deploy is Script {
 
         vm.startBroadcast(deployerKey);
 
-        // 1. Deploy PassportRegistry (normal CREATE — address determined by deployer nonce)
+        // 1. Deploy PassportRegistry (normal CREATE: address determined by deployer nonce)
         PassportRegistry registry = new PassportRegistry(deployer);
         console.log("PassportRegistry:", address(registry));
 
         // 2. Mine a salt so CREATE2 produces an address with BEFORE_SWAP_FLAG (bit 7) set.
-        //    Forge broadcasts `new Contract{salt:}` through CREATE2_FACTORY — so mine against it.
+        //    Forge broadcasts `new Contract{salt:}` through CREATE2_FACTORY: so mine against it.
         uint160 flags = Hooks.BEFORE_SWAP_FLAG;
         bytes memory constructorArgs = abi.encode(address(IPoolManager(POOL_MANAGER)), address(registry));
         (address hookAddress, bytes32 salt) = HookMiner.find(
@@ -55,7 +55,7 @@ contract Deploy is Script {
 
         vm.stopBroadcast();
 
-        // Output env vars — Vite prefix for frontend, NEXT_PUBLIC for API server
+        // Output env vars: Vite prefix for frontend, NEXT_PUBLIC for API server
         console.log("=== COPY THESE ENV VARS ===");
         console.log("VITE_PASSPORT_REGISTRY=", address(registry));
         console.log("VITE_TOXIC_FLOW_HOOK=", address(hook));

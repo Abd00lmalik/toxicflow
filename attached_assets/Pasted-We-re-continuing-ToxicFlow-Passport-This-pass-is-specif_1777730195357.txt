@@ -1,0 +1,548 @@
+We’re continuing ToxicFlow Passport.
+
+This pass is specifically for UI/UX redesign using the reference-video analysis below. Replit could not read the video directly, so use the written analysis as the design source of truth.
+
+Do not rebuild the protocol from scratch.
+Do not break existing working integrations.
+Apply the design system, page redesigns, motion language, and product polish described below.
+
+==================================================
+CURRENT APP STATE
+==================================================
+
+ToxicFlow Passport is already built and running as a Sepolia testnet dApp.
+
+Core infrastructure:
+- Uniswap v4 hook execution is integrated.
+- 0G record storage is integrated.
+- KeeperHub pool-defense workflow is integrated.
+- Passport registry and tier resolution exist.
+- Demo flow exists.
+- Developers page exists.
+- Dashboard exists.
+- Swap, Records, Pool Defense, Passport pages exist.
+
+Current problem:
+The UI/UX still does not look premium enough. It looks too basic, too flat, too dark, and too much like a developer dashboard.
+
+The goal of this pass:
+Make the entire app feel like a cinematic, futuristic, premium product that users trust at first sight.
+
+==================================================
+REFERENCE VIDEO UI/UX ANALYSIS
+==================================================
+
+Use this design brief as the source of truth.
+
+Overall style:
+- Cinematic Tech Noir.
+- Calm authority.
+- Deep focus.
+- High-end sovereign enterprise tool.
+- Mature, editorial-quality digital experience.
+- Futuristic minimalism.
+- Atmospheric.
+- Architectural.
+- Premium and stable.
+
+Visual identity keywords:
+- Futuristic Minimalism
+- Atmospheric
+- Architectural
+- Premium
+- Sovereign
+- Cinematic
+- Institutional-grade cyberpunk
+
+Layout system:
+- Large centered hero typography.
+- Massive vertical spacing.
+- Strong negative space.
+- 12-column grid feel.
+- Elements float in atmospheric 3D space.
+- Alternate dense technical sections with wide open atmospheric breaks.
+- Very large headlines with tiny but legible metadata labels.
+- Do not crowd content.
+- Do not place more than 3 cards in one row.
+
+Color and lighting:
+- Base: obsidian black, near black.
+- Use actual lighting, not flat black.
+- Accent 1: Toxic Emerald, approximately #00FF41.
+- Accent 2: Amethyst Purple, approximately #9D00FF.
+- Optional warm accent: Amber Gold, approximately #FFB800, for rare CTA/status moments.
+- Use layered radial glows and “god ray” lighting behind content.
+- Use subtle grain/noise texture globally.
+- Use faint grid lines.
+- Background should feel like an environment, not a blank wall.
+- Use glows and border highlights instead of normal drop shadows.
+
+Typography:
+- Use a sophisticated editorial serif for large hero/value headlines.
+  Suggested: Newsreader or similar.
+- Use a clean geometric grotesk for body/UI.
+  Suggested: Inter, Geist, Manrope, or Sora.
+- Use monospace for hashes, numbers, tiers, status labels, balances, and code.
+- High contrast between huge H1 and small utility labels.
+- Headings should feel precise, premium, and cinematic.
+- Body text must remain readable.
+
+Motion:
+- Slow reveal animation.
+- Fade and slide upward.
+- Duration should be 600ms to 900ms.
+- Use easing like cubic-bezier(0.16, 1, 0.3, 1).
+- Use scroll-driven parallax for background glows/particles.
+- Button hovers should use subtle glow expansion or magnetic feeling.
+- No bouncy animation.
+- No elastic animation.
+- No instant hover.
+- Motion must feel deliberate, smooth, and premium.
+
+Components:
+- Cards should have ultra-thin 0.5px or 1px low-opacity borders.
+- Cards should use subtle inner glow.
+- Buttons should be high contrast with primary accent.
+- Secondary buttons can be ghost/outline.
+- Nav should be minimalist, fixed/sticky, with backdrop blur.
+- Data visuals should feel like constellations, radar, nodes, or traces rather than business charts.
+- Modals should use glassmorphism with strong blur and centered placement.
+
+Background:
+- Add starfield or particle atmosphere.
+- Add ambient gradients.
+- Add low-opacity grain overlay.
+- Add subtle grid pattern.
+- Background orbs should move slower than content.
+- Use layered depth with z-index.
+
+UX flow:
+- Big Vision → Evidence → Details → Action.
+- Show the product through high-fidelity UI mockups, passport visuals, swap visuals, and pool-defense visuals.
+- Avoid generic icons and stock imagery.
+
+Design rules:
+1. Use strict black/obsidian base.
+2. Add visible ambient glow, not flat black.
+3. Use ultra-thin borders.
+4. Use editorial headlines.
+5. Use strong negative space.
+6. Add micro-glow to important accent text.
+7. Add fixed noise texture.
+8. Use monospace for data.
+9. Use glassmorphism for nav and modals.
+10. Keep entry hero symmetrical.
+11. Use subtle parallax.
+12. Use high-contrast CTAs.
+13. Reveal sections progressively on scroll.
+14. Use inner shadows and glows for cards.
+15. Layer UI clearly above background.
+
+Anti-rules:
+1. No generic gray.
+2. No stock photos.
+3. No bouncy animation.
+4. No generic icon spam.
+5. No light-mode sections.
+6. No crowded card grids.
+7. No huge soft-rounded bubbly corners.
+8. No normal drop shadows.
+9. No rainbow/neon chaos.
+10. No instant hovers.
+11. No plain black pages.
+12. No raw developer dashboard feel.
+
+==================================================
+TOXICFLOW DESIGN ADAPTATION
+==================================================
+
+ToxicFlow should feel like an institutional-grade cyberpunk trading passport.
+
+Public product language:
+- trading passport
+- fee class
+- wallet behavior
+- fee records
+- pool defense
+- automated response
+- trusted flow
+- riskier flow
+
+Avoid public marketing copy that loudly says:
+- Uniswap
+- 0G
+- KeeperHub
+- hooks
+- PoolSwapTest
+- raw contract internals
+
+Those can appear only on:
+- Developers page
+- Diagnostics
+- Advanced details
+
+Color direction:
+- Obsidian base.
+- Toxic emerald for swap/trust/success.
+- Amethyst purple for pool defense/monitoring.
+- Amber gold only for warnings or primary CTA accents.
+- Use visible radial glow fields and particle/grain atmosphere on every page.
+
+Core visuals:
+- Passport: 3D glass card with inner glow that changes by tier.
+- Swap: centered premium swap interface with token icons, clean fee rows, and pulse only when route is ready.
+- Pool Defense: radar visualization or node field.
+- Records: archived traces, stored record cards, compact high-confidence design.
+- Developers: sleek docs with code blocks, copy buttons, integration flow.
+
+==================================================
+PAGE-SPECIFIC REDESIGN REQUIREMENTS
+==================================================
+
+1. Landing page
+Redesign as cinematic product story.
+
+Structure:
+- Fixed glass nav.
+- Huge centered editorial hero.
+- Subheading with product clarity.
+- Primary CTA and secondary CTA.
+- Animated flow visual:
+  Wallet → Passport → Fee Class → Swap → Record → Pool Defense
+- Problem section:
+  One problem only: pools price every wallet the same even though wallet behavior differs.
+- Solution section:
+  ToxicFlow assigns wallets a trading passport and fee class.
+- Product mockup section:
+  Show passport card, swap card, record trail, pool-defense radar.
+- Tier comparison section:
+  Neutral, Trusted, Toxic.
+- Final CTA.
+
+Motion:
+- Slow reveal on scroll.
+- Background parallax.
+- Flow visual highlights steps as user scrolls.
+- Glow layers should shift subtly.
+
+2. Dashboard
+Dashboard should be wallet-only.
+
+Remove:
+- system status
+- hook address
+- pool ID
+- registry address
+- backend health
+- infrastructure status
+- global diagnostics
+
+Show only connected wallet information:
+- wallet address
+- passport status
+- current tier
+- fee class
+- recent swaps by wallet
+- recent records by wallet
+- latest stored record
+- score/tier update status
+- next action
+
+Disconnected state:
+- cinematic connect prompt.
+- explain what appears after connecting.
+
+Visual direction:
+- personal command center.
+- one large passport preview.
+- compact activity stream.
+- no developer-dashboard clutter.
+
+3. Passport page
+Make it a premium digital credential.
+
+Requirements:
+- large 3D glass passport card.
+- tier glow changes by tier.
+- wallet address.
+- passport ID/status.
+- current fee class.
+- score reason.
+- record count.
+- last update.
+- create/register passport action if available.
+- no fake scoring.
+- explain unregistered state clearly.
+
+4. Swap page
+Make it feel like a premium swap product.
+
+Requirements:
+- token icons/logos.
+- ETH to real Sepolia USDC if live.
+- if not live, clearly show the current live pair without fake labels.
+- no “Mock ERC20”.
+- amount input.
+- quote output.
+- fee class row.
+- ToxicFlow swap fee row.
+- network gas row.
+- approval state.
+- primary swap button.
+- transaction state.
+- post-swap record storage state.
+
+Visual:
+- centered glass terminal.
+- subtle green route-ready glow.
+- no raw backend details by default.
+
+5. Records page
+Make records feel like stored traces.
+
+Requirements:
+- fee records.
+- tier.
+- applied fee.
+- tx hash shortened.
+- storage status.
+- storage reference collapsed.
+- no raw clutter by default.
+- retry storage only if automatic storage failed.
+
+6. Pool Defense page
+Make it understandable and visual.
+
+Requirements:
+- radar/gauge visualization.
+- toxic share.
+- threshold.
+- flow composition.
+- latest risky record.
+- latest stored record.
+- automation status.
+- last workflow action.
+- simple explanation:
+  “Pool Defense watches recent fee records. If risky flow becomes concentrated, an automated response is triggered.”
+
+Hide raw payloads unless inside Developer details.
+
+7. Developers page
+Make it sleek and serious.
+
+Audience:
+- AMMs
+- DEXes
+- dApps
+- swap interfaces
+- liquidity pools
+
+Include:
+- Tier Resolver explanation.
+- API integration.
+- SDK integration.
+- function signatures:
+  getTraderTier(address trader)
+  hasActivePassport(address trader)
+  previewFee(address trader)
+- testnet config.
+- fee class mapping.
+- pool defense payload.
+- code blocks.
+- copy buttons.
+- explanation of why existing pools may not be retrofitted if hooks are fixed at pool creation.
+
+Visual:
+- dark docs layout.
+- sticky right config panel.
+- elegant code blocks.
+- thin borders.
+- mono labels.
+- no ugly raw text.
+
+8. Demo page
+Make it immersive.
+
+Flow:
+- gate opening intro.
+- choose Neutral, Trusted, Toxic.
+- tier activation.
+- swap stage.
+- result stage.
+- LP/AMM protection explanation stage.
+
+The demo should clearly show:
+- Neutral pays base fee.
+- Trusted pays lower fee.
+- Toxic pays higher fee.
+- LPs are protected because riskier flow pays more.
+- Pool Defense watches records and reacts when toxic concentration crosses threshold.
+
+Demo actions must remain real:
+- no fake tx hashes.
+- no fake wallets.
+- no fake storage success.
+- no fake KeeperHub success.
+
+9. Wallet modal
+Fix if still needed:
+- centered via portal to document.body.
+- full-screen blur/dim overlay.
+- wallet-specific icons and names.
+- no “Injected” label.
+- distinct icons for MetaMask, Rabby, OKX, Zerion, Browser Wallet.
+- pending state.
+- error state.
+- wrong network state.
+- switch to Sepolia.
+- smooth modal animation.
+
+10. Logo and brand
+Improve ToxicFlow logo:
+- professional icon mark.
+- avoid childish toxic/biohazard cliché.
+- use abstract flow/passport/shield/fee-routing mark.
+- nav wordmark should use stylized display font.
+- logo should work small and large.
+- landing hero can use animated mark.
+
+==================================================
+IMPLEMENTATION INSTRUCTIONS
+==================================================
+
+Use:
+- Next.js
+- CSS/Tailwind or current styling system
+- Framer Motion if installed, otherwise CSS animations
+- optional canvas particle background if feasible without breaking performance
+- next/font if available
+
+If adding packages, keep them minimal and safe.
+
+Add reusable components if useful:
+- AmbientBackground
+- NoiseOverlay
+- ScrollReveal
+- GlassPanel
+- PassportVisual
+- FlowDiagram
+- RadarGauge
+- DataPill
+- BrandMark
+- WalletModal
+
+Keep performance reasonable.
+Respect mobile responsiveness.
+
+==================================================
+EM DASH RULE
+==================================================
+
+Remove all em dashes from the repo.
+
+Search for:
+—
+
+Replace with commas, colons, hyphens, or sentence breaks.
+
+Report zero matches.
+
+==================================================
+PUBLIC COPY RULE
+==================================================
+
+Normal users should not see backend/infrastructure details.
+
+Public pages should not loudly show:
+- Uniswap
+- 0G
+- KeeperHub
+- hooks
+- PoolSwapTest
+- raw contract addresses
+- raw event names
+
+Allowed only in:
+- Developers
+- Diagnostics
+- Advanced details
+
+==================================================
+PRESERVE FUNCTIONALITY
+==================================================
+
+Do not break:
+- wallet connect
+- passport registration
+- resolver
+- quote
+- swap
+- records
+- 0G storage
+- KeeperHub trigger
+- diagnostics
+- demo tier activation
+
+If a feature is currently blocked by liquidity or missing USDC, keep the UI honest and report exact blocker.
+
+==================================================
+TESTING
+==================================================
+
+Run:
+- pnpm tsc --noEmit or corepack pnpm tsc --noEmit
+- pnpm build or corepack pnpm build
+- curl /api/diagnostics
+- curl /api/resolver?trader=<wallet>&method=all
+- curl /api/quote?trader=<wallet>&amountIn=0.001
+- curl /api/events?limit=5
+- curl /api/evidence/anchored?limit=5
+- curl /api/keeperhub/trigger with valid payload
+- curl /api/wallet-diagnostics if present
+- search for em dash
+- search for Mock ERC20
+- search for public-page backend terms
+
+==================================================
+EXPECTED REPORT
+==================================================
+
+Report:
+1. UI/UX redesign summary.
+2. How the reference analysis was applied.
+3. New visual system.
+4. Typography choices.
+5. Background and motion system.
+6. Landing page changes.
+7. Dashboard wallet-only changes.
+8. Passport page changes.
+9. Swap page changes.
+10. Records page changes.
+11. Pool Defense page changes.
+12. Developers page changes.
+13. Demo page changes.
+14. Wallet modal changes.
+15. Logo changes.
+16. Em dash removal result.
+17. Backend term cleanup result.
+18. Files changed.
+19. Commands run.
+20. Build/test results.
+21. Remaining blockers.
+
+==================================================
+SUCCESS CRITERIA
+==================================================
+
+This pass succeeds only if:
+- the site no longer feels like a plain dark dashboard.
+- it visually matches the cinematic tech-noir direction.
+- every core page has atmosphere, depth, typography, and motion.
+- dashboard is wallet-only.
+- wallet modal is polished.
+- logo looks professional.
+- Developers page is sleek.
+- Demo page is immersive.
+- backend details are hidden from public UI.
+- em dashes are gone.
+- build passes.

@@ -22,7 +22,7 @@ export const POOL_ID = (
   import.meta.env.VITE_POOL_ID ?? '0x7cd5aa906aadff2d0776a1c7fed113e19284420876110f9de18399546cf2148d'
 ) as string
 
-// Real Sepolia USDC — 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238
+// Real Sepolia USDC: 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238
 export const USDC_ADDRESS = (
   import.meta.env.VITE_USDC_ADDRESS ?? '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238'
 ) as `0x${string}`

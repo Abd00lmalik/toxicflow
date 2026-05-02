@@ -31,7 +31,7 @@ export default function Swap() {
   const isWrongChain = isConnected && chainId !== sepolia.id
   const amountBig = amountIn ? parseEther(amountIn) : BigInt(0)
   const needsApproval = outputToken.address && tokenState.allowance < amountBig && amountBig > 0
-  const estimatedOutput = amountIn ? (parseFloat(amountIn) * 2000 * (1 - fee.bps / 10000)).toFixed(4) : '—'
+  const estimatedOutput = amountIn ? (parseFloat(amountIn) * 2000 * (1 - fee.bps / 10000)).toFixed(4) : '-'
 
   const getAction = () => {
     if (!isConnected) return { label: 'Connect Wallet', action: () => setModalOpen(true) }
@@ -104,7 +104,7 @@ export default function Swap() {
           <div style={{ padding: '16px', background: 'var(--s1)', borderRadius: 'var(--r-md)', marginBottom: 20 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
               <span className="label">You Receive (est.)</span>
-              <span className="caption">Estimated output — not a binding quote</span>
+              <span className="caption">Estimated output: not a binding quote</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ flex: 1, fontSize: 28, fontWeight: 700, color: amountIn ? 'var(--fg)' : 'var(--fg-3)' }}>
@@ -132,6 +132,14 @@ export default function Swap() {
               <span style={{ fontWeight: 600, fontSize: 13, color: 'var(--fg-3)' }}>shown in wallet</span>
             </div>
           </div>
+
+          {/* Liquidity notice */}
+          {POOL_ID && (
+            <div style={{ padding: '10px 14px', background: 'var(--amber-2)', border: '1px solid rgba(245,158,11,0.22)', borderRadius: 'var(--r-sm)', marginBottom: 16, fontSize: 12, color: 'var(--amber)', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+              <span style={{ flexShrink: 0, fontWeight: 700 }}>Note</span>
+              <span>The pool is live on Sepolia, but may have limited liquidity. Swaps may revert if the pool depth is insufficient. Add liquidity via PoolModifyLiquidityTest to enable full trading.</span>
+            </div>
+          )}
 
           {/* Action Button */}
           <button

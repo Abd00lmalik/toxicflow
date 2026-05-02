@@ -27,6 +27,7 @@ function App() {
       <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
         <div className="bg-aurora" />
         <div className="bg-grid" />
+        <div className="bg-noise" />
         <Nav />
         <Switch>
           <Route path="/" component={Landing} />

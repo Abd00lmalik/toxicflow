@@ -1,0 +1,17 @@
+{
+  "network": "sepolia",
+  "chainId": 11155111,
+  "deployedAt": null,
+  "contracts": {
+    "PassportRegistry": null,
+    "ToxicFlowHook": null
+  },
+  "pool": {
+    "poolId": null,
+    "currency0": "0x0000000000000000000000000000000000000000",
+    "currency1": null,
+    "fee": "0x800000",
+    "tickSpacing": 60
+  },
+  "notes": "Populate this after running: forge script script/Deploy.s.sol --rpc-url sepolia --broadcast"
+}

@@ -1,0 +1,11 @@
+export const ToxicFlowHookABI = [
+  { type: 'function', name: 'FEE_TRUSTED', inputs: [], outputs: [{ name: '', type: 'uint24' }], stateMutability: 'view' },
+  { type: 'function', name: 'FEE_NEUTRAL', inputs: [], outputs: [{ name: '', type: 'uint24' }], stateMutability: 'view' },
+  { type: 'function', name: 'FEE_TOXIC', inputs: [], outputs: [{ name: '', type: 'uint24' }], stateMutability: 'view' },
+  { type: 'function', name: 'registry', inputs: [], outputs: [{ name: '', type: 'address' }], stateMutability: 'view' },
+  { type: 'function', name: 'previewFee', inputs: [{ name: 'trader', type: 'address' }], outputs: [{ name: 'fee', type: 'uint24' }, { name: 'tier', type: 'uint8' }, { name: 'hasPassport', type: 'bool' }], stateMutability: 'view' },
+  { type: 'function', name: 'getTraderTier', inputs: [{ name: 'trader', type: 'address' }], outputs: [{ name: '', type: 'uint8' }], stateMutability: 'view' },
+  { type: 'function', name: 'hasActivePassport', inputs: [{ name: 'trader', type: 'address' }], outputs: [{ name: '', type: 'bool' }], stateMutability: 'view' },
+  { type: 'function', name: 'getHookPermissions', inputs: [], outputs: [{ name: '', type: 'tuple', components: [{ name: 'beforeInitialize', type: 'bool' }, { name: 'afterInitialize', type: 'bool' }, { name: 'beforeAddLiquidity', type: 'bool' }, { name: 'afterAddLiquidity', type: 'bool' }, { name: 'beforeRemoveLiquidity', type: 'bool' }, { name: 'afterRemoveLiquidity', type: 'bool' }, { name: 'beforeSwap', type: 'bool' }, { name: 'afterSwap', type: 'bool' }, { name: 'beforeDonate', type: 'bool' }, { name: 'afterDonate', type: 'bool' }, { name: 'beforeSwapReturnDelta', type: 'bool' }, { name: 'afterSwapReturnDelta', type: 'bool' }, { name: 'afterAddLiquidityReturnDelta', type: 'bool' }, { name: 'afterRemoveLiquidityReturnDelta', type: 'bool' }] }], stateMutability: 'pure' },
+  { type: 'event', name: 'SwapFeeApplied', inputs: [{ name: 'poolId', type: 'bytes32', indexed: true }, { name: 'trader', type: 'address', indexed: true }, { name: 'tier', type: 'uint8', indexed: false }, { name: 'appliedFee', type: 'uint24', indexed: false }, { name: 'amountSpecified', type: 'int128', indexed: false }, { name: 'hadPassport', type: 'bool', indexed: false }, { name: 'blockNumber', type: 'uint256', indexed: false }] },
+] as const

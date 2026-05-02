@@ -1,0 +1,15 @@
+export const RUNTIME_MODE = {
+  passportLive:            Boolean(import.meta.env.VITE_PASSPORT_REGISTRY),
+  hookPreviewLive:         Boolean(import.meta.env.VITE_TOXIC_FLOW_HOOK),
+  poolReady:               Boolean(import.meta.env.VITE_POOL_ID),
+  realQuoteLive:           Boolean(import.meta.env.VITE_V4_QUOTER),
+  realSwapExecutionReady:  Boolean(import.meta.env.VITE_POOL_ID && import.meta.env.VITE_POOL_SWAP_TEST),
+  eventIndexingLive:       Boolean(import.meta.env.VITE_TOXIC_FLOW_HOOK),
+  selfRegisterDeployed:    import.meta.env.VITE_SELF_REGISTER_DEPLOYED === 'true',
+  usdcPoolReady:           Boolean(import.meta.env.VITE_USDC_ADDRESS && import.meta.env.VITE_POOL_ID),
+  zeroGStorageConfigured:  Boolean(import.meta.env.VITE_ZG_STORAGE_URL),
+  zeroGStorageLive:        false,
+  keeperHubConfigured:     false,
+  keeperHubLive:           false,
+  lpProtectionTriggerReady: false,
+} as const

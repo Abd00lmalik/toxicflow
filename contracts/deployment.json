@@ -1,17 +1,37 @@
 {
   "network": "sepolia",
   "chainId": 11155111,
-  "deployedAt": null,
+  "deployedAt": "2026-05-02",
+  "deployer": "0x73092e88D49946ac32b6Eb1a394f81bb553e411a",
   "contracts": {
-    "PassportRegistry": null,
-    "ToxicFlowHook": null
+    "PassportRegistry": "0x101fd25Ff9B9EBC21359B15F0cdE8aD7C4f01D0e",
+    "ToxicFlowHook": "0x024245B2CDBccf9581D1f6FbA533ca4061410080"
   },
   "pool": {
-    "poolId": null,
+    "poolId": "0x7cd5aa906aadff2d0776a1c7fed113e19284420876110f9de18399546cf2148d",
     "currency0": "0x0000000000000000000000000000000000000000",
-    "currency1": null,
+    "currency1": "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
     "fee": "0x800000",
-    "tickSpacing": 60
+    "tickSpacing": 60,
+    "hooks": "0x024245B2CDBccf9581D1f6FbA533ca4061410080",
+    "pair": "ETH/USDC",
+    "initialized": true,
+    "liquidityAdded": false,
+    "note": "Pool initialized. Liquidity pending — deployer needs Sepolia USDC from https://faucet.circle.com"
   },
-  "notes": "Populate this after running: forge script script/Deploy.s.sol --rpc-url sepolia --broadcast"
+  "uniswapV4": {
+    "poolManager": "0xE03A1074c86CFeDd5C142C4F04F1a1536e203543",
+    "poolSwapTest": "0x9b6b46e2c869aa39918db7f52f5557fe577b6eee"
+  },
+  "tokens": {
+    "ETH": "0x0000000000000000000000000000000000000000",
+    "USDC": "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+    "USDCDecimals": 6
+  },
+  "txHashes": {
+    "deployPassportRegistry": "0x15a86a708a92d3f0ca527a9074dcac2e26ca8b77ef9692aa62681d9a96814230",
+    "deployToxicFlowHook": "0x5d3ccdc7fd7a6a6401d819b9873bb95a6b0138e6b03ed252ff36fe44352868ad",
+    "deployToxicFlowHookV2": "confirmed — see broadcast/DeployHook.s.sol/11155111/run-latest.json",
+    "initializePool": "confirmed — see broadcast/SetupPool.s.sol/11155111/run-latest.json"
+  }
 }

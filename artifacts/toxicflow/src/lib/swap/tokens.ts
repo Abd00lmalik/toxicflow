@@ -8,26 +8,15 @@ export interface SwapToken {
   unavailableReason?: string
 }
 
+// Real Sepolia USDC — always the output token for the main swap path
+const SEPOLIA_USDC = '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238'
+
 export function getTokens(): { input: SwapToken; output: SwapToken } {
-  const usdcAddr = import.meta.env.VITE_USDC_ADDRESS
-  if (usdcAddr) {
-    return {
-      input: { symbol: 'ETH', name: 'Sepolia ETH', address: null, decimals: 18, icon: 'eth', available: true },
-      output: { symbol: 'USDC', name: 'USD Coin', address: usdcAddr, decimals: 6, icon: 'usdc', available: true },
-    }
-  }
-  const testAddr = import.meta.env.VITE_TEST_TOKEN
+  // Use env override if set, otherwise use the known Sepolia USDC address
+  const usdcAddr = import.meta.env.VITE_USDC_ADDRESS ?? SEPOLIA_USDC
   return {
     input: { symbol: 'ETH', name: 'Sepolia ETH', address: null, decimals: 18, icon: 'eth', available: true },
-    output: {
-      symbol: 'TEST',
-      name: 'Test Token',
-      address: testAddr ?? '',
-      decimals: 18,
-      icon: 'test',
-      available: Boolean(testAddr),
-      unavailableReason: testAddr ? undefined : 'Test token not configured',
-    },
+    output: { symbol: 'USDC', name: 'USD Coin (Sepolia)', address: usdcAddr, decimals: 6, icon: 'usdc', available: true },
   }
 }
 

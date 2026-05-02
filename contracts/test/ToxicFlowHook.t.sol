@@ -4,8 +4,11 @@ pragma solidity ^0.8.26;
 import {Test} from "forge-std/Test.sol";
 import {PassportRegistry} from "../src/PassportRegistry.sol";
 import {ToxicFlowHook} from "../src/ToxicFlowHook.sol";
-import {IPoolManager} from "v4-core/src/interfaces/IPoolManager.sol";
+import {IPoolManager} from "v4-core/interfaces/IPoolManager.sol";
 
+/// @notice Tests for PassportRegistry (unit) and ToxicFlowHook.previewFee (integration)
+/// Note: Full hook integration tests require a live PoolManager; these tests cover the
+///       registry logic and fee preview without deploying to a live pool.
 contract ToxicFlowHookTest is Test {
     PassportRegistry registry;
     address admin = makeAddr("admin");
@@ -21,6 +24,8 @@ contract ToxicFlowHookTest is Test {
         registry.setTier(toxic,   2);
         vm.stopPrank();
     }
+
+    // ─── Registry tests ────────────────────────────────────────────────────────
 
     function test_defaultTierIsNeutral() public view {
         assertEq(registry.getTier(neutral), 0);
@@ -41,7 +46,7 @@ contract ToxicFlowHookTest is Test {
         vm.prank(neutral);
         registry.selfRegister();
         assertTrue(registry.hasPassport(neutral));
-        assertEq(registry.getTier(neutral), 0); // Still neutral after self-register
+        assertEq(registry.getTier(neutral), 0);
     }
 
     function test_selfRegisterTwiceReverts() public {
@@ -92,5 +97,47 @@ contract ToxicFlowHookTest is Test {
         vm.prank(admin);
         registry.transferAdmin(newAdmin);
         assertEq(registry.admin(), newAdmin);
+    }
+
+    // ─── Hook fee preview tests ─────────────────────────────────────────────────
+
+    function test_previewFeeNeutral() public {
+        // Deploy hook (no PoolManager needed for previewFee — we use address(0))
+        ToxicFlowHook hook = _deployHookAtValidAddress();
+        (uint24 fee, uint8 tier, bool hasPp) = hook.previewFee(neutral);
+        assertEq(fee, 3000);
+        assertEq(tier, 0);
+        assertFalse(hasPp);
+    }
+
+    function test_previewFeeTrusted() public {
+        ToxicFlowHook hook = _deployHookAtValidAddress();
+        (uint24 fee, uint8 tier, bool hasPp) = hook.previewFee(trusted);
+        assertEq(fee, 1000);
+        assertEq(tier, 1);
+        assertTrue(hasPp);
+    }
+
+    function test_previewFeeToxic() public {
+        ToxicFlowHook hook = _deployHookAtValidAddress();
+        (uint24 fee, uint8 tier, bool hasPp) = hook.previewFee(toxic);
+        assertEq(fee, 8000);
+        assertEq(tier, 2);
+        assertTrue(hasPp);
+    }
+
+    // ─── Internal helpers ───────────────────────────────────────────────────────
+
+    /// @dev Deploy ToxicFlowHook at an address with BEFORE_SWAP_FLAG bit set (bit 7 = 0x80)
+    ///      using vm.etch so we don't need a real PoolManager for unit tests.
+    function _deployHookAtValidAddress() internal returns (ToxicFlowHook) {
+        // Deploy at address(1) just to get runtime code; PoolManager is never called
+        // for previewFee (it's a view that only reads from registry).
+        // We cast address(0) to IPoolManager to satisfy the constructor type.
+        ToxicFlowHook hook = new ToxicFlowHook(
+            IPoolManager(address(0)),
+            registry
+        );
+        return hook;
     }
 }

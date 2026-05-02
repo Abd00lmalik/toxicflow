@@ -1,18 +1,117 @@
 # ToxicFlow Passport
 
-**Behavior-aware swap protection for Uniswap v4 on Sepolia testnet.**
+**Trust-aware swap and pool-defense protocol built on Uniswap v4.**
 
-ToxicFlow Passport is a trust-aware liquidity protection protocol that assigns on-chain behavioral tiers to wallets and routes dynamic fees through a Uniswap v4 hook. Toxic wallets pay higher fees; trusted LPs are protected.
+ToxicFlow Passport gives wallets a behavior-based trading passport. When a wallet swaps through a ToxicFlow-enabled pool, the pool reads the wallet's passport tier and applies a fee class based on that tier. Trusted wallets receive lower fees. Neutral wallets pay the base rate. Wallets classified as toxic flow pay a higher fee that compensates LPs for the additional adverse selection risk.
+
+Every fee decision emits an on-chain event. Those events are anchored to 0G decentralized storage for auditability and can be used to build reputation systems, flow analytics, and pool-defense logic.
+
+**Network:** Sepolia testnet · **Status:** live
+
+---
+
+## Why ToxicFlow Exists
+
+Most AMMs price all wallets the same even though wallet behavior differs significantly. A recurring benign trader and an extractive or toxic-flow wallet can hit the same pool and receive identical fee treatment. This is inefficient for liquidity providers: toxic flow extracts value while paying the same base fee as healthier flow.
+
+ToxicFlow solves this by pricing behavior into the swap path itself. The fee is not a post-hoc penalty — it is applied at the protocol layer before the trade settles.
+
+---
+
+## Core Insight
+
+> Liquidity should not only price asset risk. It should also price flow quality.
+
+ToxicFlow adds a wallet-level trust layer that DEXes, AMMs, and liquidity venues can integrate without rebuilding their core infrastructure.
 
 ---
 
 ## How It Works
 
-1. **Wallet Registration** — traders self-register or are assigned a tier by the admin
-2. **Tier Resolution** — `PassportRegistry` stores `Trusted / Neutral / Toxic` per address
-3. **Dynamic Fee** — `ToxicFlowHook` reads the tier on every swap and applies 10 / 30 / 80 bps
-4. **Pool Defense** — KeeperHub automation monitors flow composition and triggers circuit breakers
-5. **Evidence Anchoring** — swap events are anchored to 0G decentralized storage for auditability
+```
+1.  Wallet connects to a ToxicFlow-enabled application
+2.  Wallet holds a ToxicFlow Passport (self-registered or admin-assigned)
+3.  Passport has an active tier: Trusted | Neutral | Toxic
+4.  Wallet initiates a swap through the ToxicFlow hooked pool
+5.  ToxicFlowHook intercepts the beforeSwap callback
+6.  Hook reads wallet tier from PassportRegistry
+7.  Fee class is computed and returned to PoolManager as an override
+8.  SwapFeeApplied event is emitted with tier, fee, and pool context
+9.  Evidence layer anchors the event to 0G decentralized storage
+10. Pool Defense aggregates recent flow and monitors concentration
+11. If toxic flow exceeds threshold, KeeperHub automation can respond
+```
+
+---
+
+## Fee Classes
+
+| Tier | Fee | Basis Points | Description |
+|---|---|---|---|
+| Trusted | 0.10% | 10 bps | Established, low-risk flow |
+| Neutral | 0.30% | 30 bps | Default for unregistered wallets |
+| Toxic | 0.80% | 80 bps | High-risk or adversarial flow |
+
+These values are testnet parameters. Fee levels and tier definitions are configurable per deployment and can be governed on-chain in future versions.
+
+---
+
+## System Architecture
+
+### Passport Registry
+
+`PassportRegistry` is the on-chain source of truth for wallet tiers. It stores whether a wallet has a passport and what tier it holds.
+
+- Any wallet can self-register and receive a Neutral passport
+- An authorized admin can set or batch-set tiers
+- Admin key can be transferred to a multisig or DAO
+
+Contract: [`contracts/src/passport/PassportRegistry.sol`](contracts/src/passport/PassportRegistry.sol)
+
+### Tier Resolver Interface
+
+`ITierResolver` is the standard read interface for dApps and external DEXes integrating ToxicFlow.
+
+```solidity
+interface ITierResolver {
+    function previewFee(address trader)
+        external view returns (uint24 feePips, uint8 tier, bool hasPassport);
+
+    function getTraderTier(address trader)
+        external view returns (uint8);
+
+    function hasActivePassport(address trader)
+        external view returns (bool);
+}
+```
+
+Interface: [`contracts/src/hooks/interfaces/ITierResolver.sol`](contracts/src/hooks/interfaces/ITierResolver.sol)
+
+### ToxicFlow Hook
+
+`ToxicFlowHook` is a Uniswap v4 hook that intercepts every swap via the `beforeSwap` callback. It reads the trader's tier from `PassportRegistry`, computes the appropriate fee, and returns it as a dynamic fee override to the PoolManager.
+
+The hook must be deployed at a CREATE2 address where the lower 14 bits match `BEFORE_SWAP_FLAG` exactly. `HookMiner.sol` handles the salt search at deploy time.
+
+Contract: [`contracts/src/hooks/ToxicFlowHook.sol`](contracts/src/hooks/ToxicFlowHook.sol)
+
+### Evidence and Records Layer
+
+Every `SwapFeeApplied` event emitted by the hook can be picked up and anchored to 0G decentralized storage. This creates an immutable, externally verifiable record of every fee decision. Users can inspect their own records on the `/records` page.
+
+### Pool Defense
+
+The Pool Defense module aggregates recent swap events and computes the toxic-flow concentration across a sliding window. When the concentration exceeds a configurable threshold, a KeeperHub workflow can be triggered to alert or take protective action on behalf of the pool.
+
+### Developer Integration
+
+External DEXes and applications can query wallet tier without running the full hook. The API exposes a resolver endpoint that any application can call:
+
+```
+GET /api/resolver?trader=0xYourAddress&method=all
+```
+
+A full integration guide is at [`docs/INTEGRATION_GUIDE.md`](docs/INTEGRATION_GUIDE.md).
 
 ---
 
@@ -20,28 +119,149 @@ ToxicFlow Passport is a trust-aware liquidity protection protocol that assigns o
 
 | Contract | Address |
 |---|---|
-| PassportRegistry | `0x101fd25Ff9B9EBC21359B15F0cdE8aD7C4f01D0e` |
-| ToxicFlowHook | `0x024245B2CDBccf9581D1f6FbA533ca4061410080` |
-| PoolManager | `0xE03A1074c86CFeDd5C142C4F04F1a1536e203543` |
+| PassportRegistry | [`0x101fd25Ff9B9EBC21359B15F0cdE8aD7C4f01D0e`](https://sepolia.etherscan.io/address/0x101fd25Ff9B9EBC21359B15F0cdE8aD7C4f01D0e) |
+| ToxicFlowHook | [`0x024245B2CDBccf9581D1f6FbA533ca4061410080`](https://sepolia.etherscan.io/address/0x024245B2CDBccf9581D1f6FbA533ca4061410080) |
+| Uniswap v4 PoolManager | `0xE03A1074c86CFeDd5C142C4F04F1a1536e203543` |
 | PoolSwapTest | `0x9b6b46e2c869aa39918db7f52f5557fe577b6eee` |
-| Pool (ETH/USDC) | `0x7cd5aa906aadff2d0776a1c7fed113e19284420876110f9de18399546cf2148d` |
-| Sepolia USDC | `0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238` |
+| Pool (ETH/USDC) | `0x7cd5aa906...cf2148d` ¹ |
+| Sepolia USDC | [`0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238`](https://sepolia.etherscan.io/address/0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238) |
+
+¹ Full pool ID: `0x7cd5aa906aadff2d0776a1c7fed113e19284420876110f9de18399546cf2148d`
+
+Full deployment manifest: [`contracts/deployment.json`](contracts/deployment.json)
+
+> **Note:** Pool is initialized on Sepolia. Liquidity is pending — see [Liquidity Provisioning](#liquidity-provisioning) below.
+
+---
+
+## Why Not Use Any Public USDC Pool?
+
+ToxicFlow fee enforcement requires a pool that was created with the ToxicFlow hook included. In Uniswap v4, the hook address is part of the pool identity and is set at pool initialization — it cannot be added to an existing pool.
+
+Existing public ETH/USDC pools do not have the ToxicFlow hook. They are useful for reference pricing but cannot enforce passport-based fees. Any real ToxicFlow deployment needs its own pool initialized with `ToxicFlowHook` as the hooks address.
+
+---
+
+## Liquidity Provisioning
+
+The ETH/USDC pool is initialized at a reference price of 1 ETH = 2,000 USDC using a full-range tick position (ticks −887220 / +887220, tick spacing 60).
+
+Pool depth matters for price impact. A pool with only 100 USDC will produce very high slippage on any meaningful swap. To support swaps of around 0.1 ETH with acceptable price impact, the pool needs materially more depth. A starting point of 0.05 ETH paired with 100 USDC establishes the price but does not eliminate impact.
+
+To add liquidity via the API:
+
+```bash
+POST /api/liquidity/add
+{ "ethAmount": "0.05", "usdcAmount": "100" }
+```
+
+Or directly with Foundry:
+
+```bash
+cd contracts
+forge script script/liquidity/AddLiquidity.s.sol \
+  --rpc-url $SEPOLIA_RPC_URL \
+  --broadcast --legacy -vvv
+```
+
+Full guide: [`docs/LIQUIDITY.md`](docs/LIQUIDITY.md)
 
 ---
 
 ## Repository Structure
 
 ```
+/
 ├── artifacts/
-│   ├── toxicflow/        # React + Vite frontend (production app)
-│   └── api-server/       # Express 5 API server
-├── contracts/            # Solidity 0.8.26 (Foundry)
-│   ├── src/              # PassportRegistry, ToxicFlowHook
-│   ├── script/           # Deploy, SetupPool, AddLiquidity
-│   └── test/             # 13/13 unit tests passing
-├── lib/                  # Shared TypeScript libraries (db, api-zod)
-├── scripts/              # Utility scripts
-└── vercel.json           # Vercel deployment config (builds artifacts/toxicflow)
+│   ├── toxicflow/              # React 19 + Vite 7 frontend
+│   │   └── src/
+│   │       ├── pages/          # Landing, Dashboard, Passport, Swap, Records,
+│   │       │                   # PoolDefense, Demo, Developers
+│   │       ├── components/     # UI components, wallet connector, layout
+│   │       ├── hooks/          # React hooks for passport, swap, liquidity
+│   │       └── lib/            # Swap config, utilities
+│   └── api-server/             # Express 5 API server
+│       └── src/
+│           ├── routes/         # healthz, resolver, quote, events, evidence,
+│           │                   # keeperhub, liquidity, demo
+│           └── lib/            # Shared server utilities
+│
+├── contracts/                  # Solidity 0.8.26 — Foundry
+│   ├── src/
+│   │   ├── passport/           # PassportRegistry + IPassportRegistry
+│   │   └── hooks/              # ToxicFlowHook + ITierResolver
+│   ├── script/
+│   │   ├── deploy/             # Deploy.s.sol, DeployHook.s.sol, SetupPool.s.sol
+│   │   ├── liquidity/          # AddLiquidity.s.sol
+│   │   ├── seed/               # SeedTiers.s.sol
+│   │   └── utils/              # HookMiner.sol
+│   └── test/                   # 13 unit tests (all passing)
+│
+├── lib/                        # Shared TypeScript workspace packages
+│   ├── api-spec/               # OpenAPI spec + codegen
+│   ├── api-zod/                # Zod schemas (generated)
+│   ├── api-client-react/       # React Query hooks (generated)
+│   └── db/                     # Drizzle ORM schema + migrations
+│
+├── docs/
+│   ├── ARCHITECTURE.md
+│   ├── DEPLOYMENT.md
+│   ├── INTEGRATION_GUIDE.md
+│   ├── LIQUIDITY.md
+│   └── SECURITY.md
+│
+├── scripts/                    # Workspace utility scripts
+├── vercel.json                 # Vercel config — builds artifacts/toxicflow
+└── README.md
+```
+
+---
+
+## Frontend Pages
+
+| Route | Description |
+|---|---|
+| `/` | Landing page — hero, tier overview, how it works |
+| `/dashboard` | System status, pool info, live swap events |
+| `/passport` | Wallet tier card, self-registration |
+| `/swap` | ETH → USDC swap with passport-aware fee preview |
+| `/records` | On-chain fee events, 0G anchoring status |
+| `/pool-defense` | Risk gauge, toxic-flow concentration, KeeperHub status |
+| `/developers` | Integration guide, testnet config, API explorer |
+| `/demo` | Guided walkthrough with tier simulation controls |
+
+---
+
+## API Reference
+
+All routes are served from the API server at `/api`.
+
+```
+GET  /api/healthz                        Health check
+GET  /api/diagnostics                    Config and connectivity status
+GET  /api/resolver?trader=0x...          Resolve tier for a wallet address
+GET  /api/resolver?trader=0x...&method=all  Full resolver response
+GET  /api/quote?amountIn=0.001&trader=0x... Fee quote with tier context
+GET  /api/events?limit=20               Recent SwapFeeApplied events
+POST /api/evidence/anchor               Anchor swap event to 0G storage
+GET  /api/evidence/anchored             List anchored records
+POST /api/demo/set-tier                 Set tier (demo mode only)
+POST /api/keeperhub/trigger             Trigger KeeperHub workflow
+POST /api/liquidity/add                 Add ETH/USDC liquidity via deployer
+GET  /api/liquidity/status              Pool and liquidity configuration
+```
+
+**Example resolver response:**
+
+```json
+{
+  "trader": "0xYourAddress",
+  "tier": 0,
+  "tierLabel": "Neutral",
+  "hasActivePassport": false,
+  "feeBps": 30,
+  "resolverType": "on-chain"
+}
 ```
 
 ---
@@ -55,80 +275,178 @@ ToxicFlow Passport is a trust-aware liquidity protection protocol that assigns o
 | Contracts | Solidity 0.8.26, Foundry, Uniswap v4 |
 | Database | PostgreSQL |
 | Automation | KeeperHub |
-| Storage | 0G decentralized storage |
+| Evidence storage | 0G decentralized storage |
+| Monorepo | pnpm workspaces |
 
 ---
 
-## Frontend Pages
+## Environment Variables
 
-| Route | Description |
-|---|---|
-| `/` | Landing — hero, tier cards, how it works |
-| `/dashboard` | System status, pool info, live events |
-| `/passport` | Wallet tier card, self-registration |
-| `/swap` | ETH→USDC swap with tier-based fee + Add Liquidity |
-| `/records` | On-chain fee events + 0G anchoring status |
-| `/pool-defense` | Risk gauge, flow composition, KeeperHub |
-| `/developers` | Integration guide, testnet config |
-| `/demo` | Guided walkthrough with admin tier controls |
-
----
-
-## API Routes
-
-```
-GET  /api/healthz
-GET  /api/diagnostics
-GET  /api/resolver?trader=0x...
-GET  /api/quote?amountIn=0.001&trader=0x...
-GET  /api/events?limit=20
-POST /api/evidence/anchor
-GET  /api/evidence/anchored
-POST /api/demo/set-tier
-POST /api/keeperhub/trigger
-POST /api/liquidity/add
-GET  /api/liquidity/status
-```
-
----
-
-## Development
+Copy `.env.example` to `.env.local` and fill in values. Never commit secrets.
 
 ```bash
-# Install dependencies
+# ── Blockchain ────────────────────────────────────────────────────────────────
+SEPOLIA_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_KEY
+VITE_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_KEY
+
+# ── Deployed contract addresses ───────────────────────────────────────────────
+VITE_PASSPORT_REGISTRY=0x101fd25Ff9B9EBC21359B15F0cdE8aD7C4f01D0e
+VITE_TOXIC_FLOW_HOOK=0x024245B2CDBccf9581D1f6FbA533ca4061410080
+VITE_POOL_MANAGER=0xE03A1074c86CFeDd5C142C4F04F1a1536e203543
+VITE_USDC_ADDRESS=0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238
+VITE_POOL_ID=0x7cd5aa906aadff2d0776a1c7fed113e19284420876110f9de18399546cf2148d
+
+# ── Server keys (never expose client-side) ────────────────────────────────────
+DEPLOYER_PRIVATE_KEY=                    # deployer EOA — forge scripts
+SCORER_PRIVATE_KEY=                      # scorer/oracle key
+ZG_SIGNER_PRIVATE_KEY=                   # 0G storage signer
+
+# ── Integrations ──────────────────────────────────────────────────────────────
+KEEPERHUB_API_URL=https://api.keeperhub.io
+KEEPERHUB_API_KEY=
+KEEPERHUB_WORKFLOW_ID=
+
+# ── App behaviour ─────────────────────────────────────────────────────────────
+DEMO_MODE=false
+VITE_SELF_REGISTER_DEPLOYED=true
+SESSION_SECRET=                          # express-session secret
+```
+
+---
+
+## Local Development
+
+**Prerequisites:** Node 20+, pnpm 10+, Foundry
+
+```bash
+# Install workspace dependencies
 pnpm install
 
-# Start frontend (requires PORT and BASE_PATH env vars)
+# Start frontend dev server (http://localhost:PORT)
 pnpm --filter @workspace/toxicflow run dev
 
 # Start API server
 pnpm --filter @workspace/api-server run dev
 
-# Build frontend (Vercel)
-pnpm --filter @workspace/toxicflow run build
-
-# Typecheck
+# Full typecheck (libs + all artifacts)
 pnpm run typecheck
-
-# Foundry tests
-forge test
 ```
 
 ---
 
-## Vercel Deployment
+## Contract Development
 
-Vercel builds `artifacts/toxicflow` as a static Vite SPA. The `vercel.json` at repo root configures this automatically. The API server deploys separately (e.g. Railway, Render, or any Node host).
+```bash
+cd contracts
+
+# Build all contracts
+forge build
+
+# Run unit tests
+forge test -vv
+
+# Deploy PassportRegistry + ToxicFlowHook
+forge script script/deploy/Deploy.s.sol \
+  --rpc-url $SEPOLIA_RPC_URL \
+  --broadcast --legacy -vvv
+
+# Initialize ETH/USDC pool
+forge script script/deploy/SetupPool.s.sol \
+  --rpc-url $SEPOLIA_RPC_URL \
+  --broadcast --legacy -vvv
+
+# Add liquidity
+forge script script/liquidity/AddLiquidity.s.sol \
+  --rpc-url $SEPOLIA_RPC_URL \
+  --broadcast --legacy -vvv
+
+# Seed tier data
+forge script script/seed/SeedTiers.s.sol \
+  --rpc-url $SEPOLIA_RPC_URL \
+  --broadcast --legacy
+```
 
 ---
 
-## Fee Tiers
+## Deployment
 
-| Tier | Fee | Description |
-|---|---|---|
-| Trusted | 10 bps | Low-risk, long-standing LPs |
-| Neutral | 30 bps | Default for unregistered wallets |
-| Toxic | 80 bps | High-risk flow, protects pool from adverse selection |
+ToxicFlow deploys as two separate services:
+
+### Frontend — Vercel
+
+The `vercel.json` at repo root configures this automatically:
+
+| Setting | Value |
+|---|---|
+| Root directory | *(repo root)* |
+| Build command | `pnpm --filter @workspace/toxicflow run build` |
+| Output directory | `artifacts/toxicflow/dist/public` |
+| Framework | Other |
+| `BASE_PATH` env | `/` |
+
+All required `VITE_*` variables must be set in the Vercel dashboard. Private keys are not used by the frontend.
+
+### API Server — Node host (Railway, Render, Fly)
+
+```bash
+pnpm --filter @workspace/api-server run build
+node artifacts/api-server/dist/index.js
+```
+
+Set all environment variables (including `DEPLOYER_PRIVATE_KEY`, `ZG_SIGNER_PRIVATE_KEY`, `KEEPERHUB_API_KEY`) in the host's secret manager — never in the repository.
+
+---
+
+## Demo Flow
+
+The `/demo` page provides a guided walkthrough with three selectable wallet personas:
+
+1. **Choose a persona** — Neutral, Trusted, or Toxic
+2. The demo mode sets the tier on a test wallet through the admin API
+3. **Initiate a swap** — the app calls the quote API to preview the expected fee
+4. **Swap executes** — on testnet, a real transaction fires through the hooked pool
+5. **Fee record appears** in the `/records` page
+6. **Pool Defense** updates to reflect the simulated flow composition
+
+Demo mode (`DEMO_MODE=true`) enables the `POST /api/demo/set-tier` route. This route should be disabled or guarded in any production deployment.
+
+---
+
+## Security Notes
+
+- Never commit private keys or `.env.local` to version control
+- The `DEPLOYER_PRIVATE_KEY` controls all on-chain admin operations — guard it
+- `DEMO_MODE=true` enables unrestricted tier-setting; disable in production
+- `PassportRegistry` admin is a single EOA on testnet; upgrade to multisig before mainnet
+- `ToxicFlowHook` uses `tx.origin` to identify the originating trader — contracts routing swaps on behalf of users will be classified by the EOA that initiated the transaction
+- No formal audit has been conducted — testnet only
+
+Full security notes: [`docs/SECURITY.md`](docs/SECURITY.md)
+
+---
+
+## Roadmap
+
+- [ ] Deeper ETH/USDC liquidity on Sepolia
+- [ ] Time-decay on tier classifications (Toxic → Neutral after clean activity period)
+- [ ] On-chain tier appeal and dispute resolution
+- [ ] Additional DEX integrations via the resolver interface
+- [ ] Advanced flow scoring using historical event data
+- [ ] Multisig admin and on-chain governance for fee parameters
+- [ ] Production security audit
+- [ ] Mainnet deployment
+
+---
+
+## Documentation
+
+| Document | Description |
+|---|---|
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Technical system overview |
+| [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | Step-by-step deployment guide |
+| [`docs/INTEGRATION_GUIDE.md`](docs/INTEGRATION_GUIDE.md) | Integrating ToxicFlow into external DEXes |
+| [`docs/LIQUIDITY.md`](docs/LIQUIDITY.md) | Liquidity provisioning and pool math |
+| [`docs/SECURITY.md`](docs/SECURITY.md) | Security considerations |
 
 ---
 

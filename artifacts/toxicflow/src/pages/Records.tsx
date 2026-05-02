@@ -107,20 +107,31 @@ export default function Records() {
               </div>
 
               {expandedTx === ev.txHash && (
-                <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--b-dim)', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 12 }}>
+                <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--b-dim)', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
                   {[
                     { label: 'Tier', value: `${ev.tier} (${tierLabels[ev.tier]})` },
                     { label: 'Fee Pips', value: String(ev.appliedFeePips) },
                     { label: 'Fee Bps', value: String(ev.appliedFeeBps) },
                     { label: 'Block', value: String(ev.blockNumber) },
                     { label: 'Trader', value: `${ev.trader?.slice(0, 8)}...${ev.trader?.slice(-6)}` },
-                    { label: 'Storage Ref', value: ev.storageRef ?? 'None' },
                   ].map(f => (
                     <div key={f.label}>
                       <div className="label" style={{ marginBottom: 3 }}>{f.label}</div>
                       <div className="mono" style={{ fontSize: 12, color: 'var(--fg)' }}>{f.value}</div>
                     </div>
                   ))}
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <div className="label" style={{ marginBottom: 3 }}>Storage Ref</div>
+                    <div className="mono" style={{ fontSize: 11, color: 'var(--fg)', wordBreak: 'break-all' }}>
+                      {ev.storageRef ?? 'Not anchored'}
+                    </div>
+                  </div>
+                  {ev.poolId && (
+                    <div style={{ gridColumn: '1 / -1' }}>
+                      <div className="label" style={{ marginBottom: 3 }}>Pool ID</div>
+                      <div className="mono" style={{ fontSize: 11, color: 'var(--fg)', wordBreak: 'break-all' }}>{ev.poolId}</div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

@@ -239,17 +239,17 @@ uint24 feeBps = feePips / 100;  // 10, 30, or 80`,
         </div>
       </section>
 
-      {/* Demo Recording Guide */}
+      {/* Guided Demo */}
       <section style={{ marginBottom: 48 }}>
         <div className="card" style={{ padding: 24, background: 'rgba(0,209,102,0.04)', borderColor: 'rgba(0,209,102,0.22)' }}>
-          <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-            <div style={{ fontSize: 28, lineHeight: 1, flexShrink: 0 }}>🎬</div>
-            <div>
-              <div className="heading" style={{ marginBottom: 6 }}>Recording a demo?</div>
-              <div className="body" style={{ fontSize: 14, marginBottom: 12 }}>
-                The repo includes a step-by-step demo recording guide covering setup, the recommended flow, a voiceover script, and troubleshooting.
+          <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+            <div style={{ fontSize: 28, lineHeight: 1, flexShrink: 0 }}>▶</div>
+            <div style={{ flex: 1, minWidth: 240 }}>
+              <div className="heading" style={{ marginBottom: 8 }}>Try the Guided Demo</div>
+              <div className="body" style={{ fontSize: 14, marginBottom: 16 }}>
+                Walk through wallet connection, passport selection, fee preview, swap execution, and pool defense monitoring — all live on Sepolia testnet.
               </div>
-              <code className="mono" style={{ fontSize: 12, color: 'var(--accent)' }}>docs/DEMO_RECORDING_GUIDE.md</code>
+              <a href="/demo" className="btn btn-secondary btn-sm">Open Demo Flow →</a>
             </div>
           </div>
         </div>

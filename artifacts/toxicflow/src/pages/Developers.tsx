@@ -239,6 +239,22 @@ uint24 feeBps = feePips / 100;  // 10, 30, or 80`,
         </div>
       </section>
 
+      {/* Demo Recording Guide */}
+      <section style={{ marginBottom: 48 }}>
+        <div className="card" style={{ padding: 24, background: 'rgba(0,209,102,0.04)', borderColor: 'rgba(0,209,102,0.22)' }}>
+          <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+            <div style={{ fontSize: 28, lineHeight: 1, flexShrink: 0 }}>🎬</div>
+            <div>
+              <div className="heading" style={{ marginBottom: 6 }}>Recording a demo?</div>
+              <div className="body" style={{ fontSize: 14, marginBottom: 12 }}>
+                The repo includes a step-by-step demo recording guide covering setup, the recommended flow, a voiceover script, and troubleshooting.
+              </div>
+              <code className="mono" style={{ fontSize: 12, color: 'var(--accent)' }}>docs/DEMO_RECORDING_GUIDE.md</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* LP Explanation */}
       <section>
         <h2 className="heading" style={{ marginBottom: 16 }}>How Pool Defense Works</h2>

@@ -56,6 +56,22 @@ export default defineConfig(async ({ command }) => {
     build: {
       outDir: path.resolve(import.meta.dirname, "dist/public"),
       emptyOutDir: true,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ["react", "react-dom"],
+            wagmi: ["wagmi", "viem"],
+            ui: [
+              "@radix-ui/react-dialog",
+              "@radix-ui/react-dropdown-menu",
+              "@radix-ui/react-tabs",
+              "@radix-ui/react-tooltip",
+              "framer-motion",
+            ],
+            charts: ["recharts"],
+          },
+        },
+      },
     },
     server: {
       port,

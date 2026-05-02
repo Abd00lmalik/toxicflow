@@ -1,10 +1,8 @@
 {
   "outputDirectory": "dist/public",
   "framework": null,
-  "env": {
-    "BASE_PATH": "/"
-  },
   "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

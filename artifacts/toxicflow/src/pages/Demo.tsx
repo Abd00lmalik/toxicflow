@@ -11,38 +11,102 @@ const DEMO_TIERS = [
   { tier: 2, label: 'Toxic', color: 'var(--toxic)', desc: 'Higher fee: applied to risky flow: 80 bps', fee: '0.80%' },
 ]
 
+interface DemoError {
+  short: string
+  detail?: string
+  fix?: string
+}
+
+function parseDemoError(status: number, body: Record<string, unknown> | null, fetchFailed: boolean): DemoError {
+  if (fetchFailed) {
+    return {
+      short: 'API route not reachable',
+      detail: 'The /api/demo/set-tier endpoint could not be contacted. This usually means the Vercel deployment has not picked up the new serverless functions yet.',
+      fix: 'Trigger a new Vercel deployment (push a commit or redeploy from the Vercel dashboard).',
+    }
+  }
+  if (!body) {
+    return {
+      short: 'API returned an unreadable response (HTML instead of JSON)',
+      detail: 'Vercel is serving the SPA index.html for /api/* routes — serverless functions are not deployed yet.',
+      fix: 'Redeploy from the Vercel dashboard after the latest commit lands.',
+    }
+  }
+  const err = String(body.error ?? '')
+  const missing = body.missingEnvVar as string | undefined
+  const fix = body.fix as string | undefined
+
+  if (status === 503 && missing) {
+    return {
+      short: `Demo server not configured: ${missing} is missing`,
+      detail: err,
+      fix: fix ?? `Add ${missing} in your Vercel project → Settings → Environment Variables, then redeploy.`,
+    }
+  }
+  if (status === 403 || err.includes('NotScorer') || err.includes('Unauthorized') || err.includes('revert')) {
+    return {
+      short: 'Transaction reverted — scorer wallet lacks setTier permission',
+      detail: err,
+      fix: 'The DEPLOYER_PRIVATE_KEY account must be the scorer on the PassportRegistry contract.',
+    }
+  }
+  if (status === 400) {
+    return { short: err || 'Invalid request', detail: 'Wallet address or tier value was rejected by the server.' }
+  }
+  if (status >= 500) {
+    return {
+      short: 'Server error during tier activation',
+      detail: err,
+      fix: 'Check Vercel function logs for the full stack trace.',
+    }
+  }
+  return { short: err || 'Failed to set tier', detail: body ? JSON.stringify(body) : undefined }
+}
+
 export default function Demo() {
   const { address, isConnected } = useAccount()
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedTier, setSelectedTier] = useState<number | null>(null)
   const [activating, setActivating] = useState(false)
   const [activated, setActivated] = useState(false)
-  const [activateError, setActivateError] = useState('')
+  const [activateError, setActivateError] = useState<DemoError | null>(null)
+  const [showDetail, setShowDetail] = useState(false)
   const passport = usePassport(address)
 
   const activateTier = async (tier: number) => {
     if (!address) return
     setActivating(true)
-    setActivateError('')
+    setActivateError(null)
+    setShowDetail(false)
+    let status = 0
+    let body: Record<string, unknown> | null = null
+    let fetchFailed = false
     try {
       const r = await fetch('/api/demo/set-tier', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ trader: address, tier }),
       })
-      const d = await r.json()
-      if (d.success) {
-        setSelectedTier(tier)
-        setActivated(true)
-        passport.refetch()
+      status = r.status
+      const ct = r.headers.get('content-type') ?? ''
+      if (ct.includes('application/json')) {
+        body = await r.json()
       } else {
-        setActivateError(d.error ?? 'Failed to set tier')
+        // Vercel returned HTML (SPA catch-all) — functions not deployed
+        body = null
       }
     } catch {
-      setActivateError('Network error: server may not be configured')
-    } finally {
-      setActivating(false)
+      fetchFailed = true
     }
+
+    if (!fetchFailed && body && (body as any).success) {
+      setSelectedTier(tier)
+      setActivated(true)
+      passport.refetch()
+    } else {
+      setActivateError(parseDemoError(status, body, fetchFailed))
+    }
+    setActivating(false)
   }
 
   const fee = selectedTier !== null ? tierFee(selectedTier) : null
@@ -118,8 +182,34 @@ export default function Demo() {
         )}
 
         {activateError && (
-          <div style={{ padding: '12px 16px', background: 'var(--toxic-2)', border: '1px solid var(--toxic)', borderRadius: 'var(--r-md)', color: 'var(--toxic)', fontSize: 13 }}>
-            {activateError}
+          <div style={{ padding: '14px 16px', background: 'var(--toxic-2)', border: '1px solid var(--toxic)', borderRadius: 'var(--r-md)', fontSize: 13 }}>
+            <div style={{ color: 'var(--toxic)', fontWeight: 600, marginBottom: activateError.detail || activateError.fix ? 8 : 0 }}>
+              {activateError.short}
+            </div>
+            {(activateError.detail || activateError.fix) && (
+              <>
+                <button
+                  onClick={() => setShowDetail(v => !v)}
+                  style={{ background: 'none', border: 'none', color: 'var(--fg-2)', fontSize: 12, cursor: 'pointer', padding: 0, marginBottom: showDetail ? 8 : 0 }}
+                >
+                  {showDetail ? '▲ Hide details' : '▼ Show details'}
+                </button>
+                {showDetail && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {activateError.detail && (
+                      <div className="mono" style={{ fontSize: 11, color: 'var(--fg-2)', background: 'var(--s2)', padding: '8px 10px', borderRadius: 'var(--r-sm)', wordBreak: 'break-all' }}>
+                        {activateError.detail}
+                      </div>
+                    )}
+                    {activateError.fix && (
+                      <div style={{ fontSize: 12, color: 'var(--fg)', lineHeight: 1.5 }}>
+                        <strong>Fix:</strong> {activateError.fix}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
           </div>
         )}
       </div>

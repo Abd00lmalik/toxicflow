@@ -156,10 +156,6 @@ overrides:
 importers:
 
   .:
-    dependencies:
-      viem:
-        specifier: ^2.48.7
-        version: 2.48.7(typescript@5.9.3)(zod@4.3.6)
     devDependencies:
       prettier:
         specifier: ^3.8.1

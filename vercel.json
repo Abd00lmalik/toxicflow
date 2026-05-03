@@ -6,7 +6,11 @@
   "env": {
     "BASE_PATH": "/"
   },
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+  "functions": {
+    "api/**/*.ts": {}
+  },
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

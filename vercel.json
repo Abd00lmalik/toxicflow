@@ -4,7 +4,8 @@
   "installCommand": "pnpm install",
   "framework": null,
   "env": {
-    "BASE_PATH": "/"
+    "BASE_PATH": "/",
+    "NEXT_PUBLIC_PASSPORT_REGISTRY": "0x101fd25Ff9B9EBC21359B15F0cdE8aD7C4f01D0e"
   },
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }

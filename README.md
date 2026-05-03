@@ -136,47 +136,7 @@ Full deployment manifest: [`contracts/deployment.json`](contracts/deployment.jso
 ---
 
 
-## Repository Structure
 
-```
-/
-├── artifacts/
-│   ├── toxicflow/              # React 19 + Vite 7 frontend
-│   │   └── src/
-│   │       ├── pages/          # Landing, Dashboard, Passport, Swap, Records,
-│   │       │                   # PoolDefense, Demo, Developers
-│   │       ├── components/     # UI components, wallet connector, layout
-│   │       ├── hooks/          # React hooks for passport, swap, liquidity
-│   │       └── lib/            # Swap config, utilities
-│   └── api-server/             # Express 5 API server
-│       └── src/
-│           ├── routes/         # healthz, resolver, quote, events, evidence,
-│           │                   # keeperhub, liquidity, demo
-│           └── lib/            # Shared server utilities
-│
-├── contracts/                  # Solidity 0.8.26 — Foundry
-│   ├── src/
-│   │   ├── passport/           # PassportRegistry + IPassportRegistry
-│   │   └── hooks/              # ToxicFlowHook + ITierResolver
-│   ├── script/
-│   │   ├── deploy/             # Deploy.s.sol, DeployHook.s.sol, SetupPool.s.sol
-│   │   ├── liquidity/          # AddLiquidity.s.sol
-│   │   ├── seed/               # SeedTiers.s.sol
-│   │   └── utils/              # HookMiner.sol
-│   └── test/                   # 13 unit tests (all passing)
-│
-├── lib/                        # Shared TypeScript workspace packages
-│   ├── api-spec/               # OpenAPI spec + codegen
-│   ├── api-zod/                # Zod schemas (generated)
-│   ├── api-client-react/       # React Query hooks (generated)
-│   └── db/                     # Drizzle ORM schema + migrations
-│
-├── scripts/                    # Workspace utility scripts
-├── vercel.json                 # Vercel config — builds artifacts/toxicflow
-└── README.md
-```
-
----
 
 ## Frontend Pages
 

@@ -29,6 +29,7 @@ function App() {
         <div className="bg-grid" />
         <div className="bg-noise" />
         <Nav />
+        <div style={{ paddingTop: 64 }}>
         <Switch>
           <Route path="/" component={Landing} />
           <Route path="/dashboard" component={Dashboard} />
@@ -40,6 +41,7 @@ function App() {
           <Route path="/demo" component={Demo} />
           <Route component={NotFound} />
         </Switch>
+        </div>
       </WouterRouter>
     </Web3Providers>
   )

@@ -178,9 +178,6 @@ export default function PoolDefense() {
               <span className="caption" style={{ color: stateColor[cbState], fontWeight: 600 }}>{stateLabel[cbState]}</span>
             </div>
           </div>
-          <div style={{ padding: '8px 14px', background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.22)', borderRadius: 'var(--r-sm)', fontSize: 12, color: 'var(--stale)', maxWidth: 340 }}>
-            Requires <strong>ToxicFlowHookV2</strong>. The current pool uses V1 (no pause support). Deploy V2 to enable on-chain circuit breaking.
-          </div>
         </div>
 
         {swapsPaused && (
@@ -308,13 +305,14 @@ export default function PoolDefense() {
         {showDevDetails && (
           <div style={{ padding: '0 24px 24px', display: 'flex', flexDirection: 'column', gap: 10 }}>
             {[
-              { label: 'Hook Address (V1)',  value: TOXIC_FLOW_HOOK ?? 'Not deployed' },
-              { label: 'Pool ID',            value: POOL_ID ?? 'Not configured' },
-              { label: 'Threshold',          value: `${threshold}% (${(threshold * 100).toFixed(0)} bps)` },
-              { label: 'Toxic Share',        value: `${toxicShare.toFixed(2)}%` },
-              { label: 'Circuit Breaker',    value: 'Requires ToxicFlowHookV2 — deploy contracts/src/hooks/ToxicFlowHookV2.sol' },
-              { label: 'Pause Route',        value: 'POST /api/pool-defense/pause (Bearer KEEPERHUB_API_KEY)' },
-              { label: 'Resume Route',       value: 'POST /api/pool-defense/resume (Bearer KEEPERHUB_API_KEY)' },
+              { label: 'Hook Address',  value: TOXIC_FLOW_HOOK ?? 'Not deployed' },
+              { label: 'Pool ID',       value: POOL_ID ?? 'Not configured' },
+              { label: 'Threshold',     value: `${threshold}% (${(threshold * 100).toFixed(0)} bps)` },
+              { label: 'Toxic Share',   value: `${toxicShare.toFixed(2)}%` },
+              { label: 'Pool State',    value: swapsPaused ? 'Paused' : 'Active' },
+              { label: 'Pause Route',   value: 'POST /api/pool-defense/pause (Bearer KEEPERHUB_API_KEY)' },
+              { label: 'Resume Route',  value: 'POST /api/pool-defense/resume (Bearer KEEPERHUB_API_KEY)' },
+              { label: 'Circuit Breaker Note', value: 'pause/resume call the hook\'s pauseSwaps(bytes32) and resumeSwaps() functions — requires hook to have circuit breaker support' },
             ].map(r => (
               <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', gap: 12, fontSize: 13 }}>
                 <span className="caption" style={{ flexShrink: 0 }}>{r.label}</span>

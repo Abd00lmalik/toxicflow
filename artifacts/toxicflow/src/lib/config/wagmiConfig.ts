@@ -1,11 +1,11 @@
 import { createConfig, http, fallback } from 'wagmi'
 import { sepolia } from 'wagmi/chains'
-import { metaMask, injected } from 'wagmi/connectors'
+import { injected } from 'wagmi/connectors'
 
 export const wagmiConfig = createConfig({
   chains: [sepolia],
   ssr: false,
-  connectors: [metaMask(), injected()],
+  connectors: [injected()],
   transports: {
     [sepolia.id]: fallback([
       http(import.meta.env.VITE_RPC_URL ?? ''),
